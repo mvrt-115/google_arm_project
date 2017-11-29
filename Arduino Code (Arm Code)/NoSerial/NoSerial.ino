@@ -19,9 +19,9 @@
 #define PRECISION 100 //higher precision = lower speed
 #define HALF_X_WIDTH .3536
 
-AccelStepper joint1(1, 55, 54); // stp 55, dir 54
-AccelStepper joint2(1, 57, 56); //stp 57, dir 56
-AccelStepper elevator(1, 59, 58); //stp 59, dir 58
+AccelStepper joint1(1, A1, A0); // stp A1, dir A0
+AccelStepper joint2(1, A3, A2); //stp A3, dir A2
+AccelStepper elevator(1, A5, A4); //stp A5, dir A4
 
 const double a = 6.44; // length of joint 1(closer to base) in inches
 const double b = 6.54; // length of joint 2(farther from base) in inches
@@ -34,9 +34,10 @@ void setup() {
   elevator.setMaxSpeed(ELEVATOR_MAX_SPEED);
   while (elevator.distanceToGo() > 0) {
     elevator.run();
+    Serial.println(elevator.distanceToGo());
   }
   //drawX(5, 5);
-  drawCircle(-5, 5);
+  //drawCircle(-5, 5);
 }
 
 void loop() {
@@ -133,3 +134,4 @@ double Z(double x, double y) {
   double c = sqrt(x * x + y * y);
   return degrees(acos((a * a + b * b - c * c) / (2 * a * b)));
 }
+
