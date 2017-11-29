@@ -6,7 +6,8 @@
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   // initialize serial:
-  Serial.begin(9600);
+  Serial.begin(115200);
+  Serial.write('Start');
 }
 
 void loop() {

@@ -7,9 +7,9 @@
 - [Setup/Check Audio](https://developers.google.com/assistant/sdk/eap/guides/service/python/embed/audio) (Must be in EAP Google group)
 
 ## Raspberry Pi Commands:
-- Start Virtual Enviroment: `source /something/i/forgot`
-- Navigate to code folder: `cd something/very/long/that/i/forgot`
-- Edit pushToTalk.py: `nano pushToTalk.py`
+- Start Virtual Enviroment: `source /env/bin/activate`
+- Navigate to code folder: `cd google-assistant-sdk-0.4.0/googlesamples/assistant/grpc`
+- Edit pushToTalk.py: `nano pushToTalk<version>.py`
   - `ctrl+w` and `@device` to find On Off example trait code
   - `ctrl+x` to save
-- Run pushToTalk.py: `python pushToTalk.py --device-id TEST-115`
+- Run pushToTalk.py: `python pushToTalk<version>.py --device-id 115-TEST`
