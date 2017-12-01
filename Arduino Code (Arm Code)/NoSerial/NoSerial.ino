@@ -26,6 +26,21 @@ AccelStepper elevator(1, A5, A4); //stp A5, dir A4
 const double a = 6.44; // length of joint 1(closer to base) in inches
 const double b = 6.54; // length of joint 2(farther from base) in inches
 
+const double coords[18] = { // coordinate points in sets of (x,y) format, offset by 1
+  999.0, 999.0  // offset
+  1.0, 1.0, // position A1
+  2.0, 2.0, // position A2
+  3.0, 3.0, // position A3
+  4.0, 4.0, // position B1
+  5.0, 5.0, // position B2
+  6.0, 6.0, // position B3
+  7.0 ,7.0, // position C1
+  8.0, 8.0, // position C2
+  9.0, 9.0  // position C3
+};
+
+boolean xTurn = true; // Used to track turns
+
 void setup() {
   Serial.begin(BAUD_RATE);
   joint1.setAcceleration(JOINT_1_ACCELERATION);
@@ -38,9 +53,24 @@ void setup() {
   }
   //drawX(5, 5);
   //drawCircle(-5, 5);
+  Serial.write("Start");
 }
 
-void loop() {
+void loop() {}
+
+void serialEvent() {
+  if (Serial.available()) {
+    int inputInt = Serial.read() - '0';
+    if (inputInt == 0)
+      xTurn = true;
+    else {
+      if (xTurn)
+        drawX(coords[inputInt*2], coords[inputInt*2+1]);
+      else
+        drawCircles(coords[inputInt*2], coords[inputInt*2+1]);
+      xTurn = !xTurn;
+    }
+  }
 }
 
 void elevatorRun() {
