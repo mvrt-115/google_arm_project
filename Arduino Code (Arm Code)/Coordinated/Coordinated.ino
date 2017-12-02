@@ -4,7 +4,7 @@
 #include <AccelStepper.h>;
 #include <Servo.h>;
 
-#define BAUD_RATE 9600
+#define BAUD_RATE 115200
 #define ELEVATOR_TOLERANCE 200
 #define ARM_STEPS 6400 //steps per rotation for joint 1 and joint 2 stepper motors
 #define ELEVATOR_STEPS 3200 //steps per rotation for elevator stepper motors
