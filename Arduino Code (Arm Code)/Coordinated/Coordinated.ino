@@ -102,12 +102,12 @@ void drawX(double x, double y) {
 void drawCircle(double x, double y) {
   elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
   elevatorRun();
-  for (double i = 0.00; i < PRECISION; i++) {
-    if (i == 1) {
+  for (int i = 0; i < PRECISION; i++) {
+    if (i == 0) {
       elevator.moveTo(ELEVATOR_DOWN); // move down to draw
       elevatorRun();
     }
-    goTo(CIRCLE_RADIUS * cos(2 * PI * i / PRECISION) + x, CIRCLE_RADIUS * sin(2 * PI * i / PRECISION) + y);
+    goTo(CIRCLE_RADIUS * cos(9 * PI / 4 * i / PRECISION) + x, CIRCLE_RADIUS * sin(9 * PI / 4 * i / PRECISION) + y);
   }
 }
 
