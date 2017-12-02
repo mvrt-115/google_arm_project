@@ -1,5 +1,5 @@
 //elevator starts out with t-shaped piece resting on 3/32 diameter rod on hole above tape
-//arm starts out folded against right side of the elevator 
+//arm starts out folded against right side of the elevator
 
 #include <AccelStepper.h>;
 #include <Servo.h>;
@@ -20,7 +20,7 @@
 #define HALF_X_WIDTH .3536
 #define JOINT_1_OFFSET -2000 //in steps
 #define JOINT_2_OFFSET  -3650 //in steps
-#define ELEVATOR_OFFSET -16000 //in steps 
+#define ELEVATOR_OFFSET -16000 //in steps
 
 AccelStepper joint1(1, 67, 66); // 1, stp, dir
 AccelStepper joint2(1, 65, 64); //1, stp, dir
@@ -38,19 +38,33 @@ void setup() {
   offset();
 
   //row1
-  drawX(-5, 4.75); 
-  drawX(-1, 4);
-  drawX(3, 6);
+  drawXSimple(-5, 4.75);
+  drawXSimple(-1, 4);
+  drawXSimple(3, 6);
 
   //row2
-  drawX(-5, 6.75); 
-  drawX(-1, 6);
-  drawX(3, 8);
+  drawXSimple(-5, 6.75);
+  drawXSimple(-1, 6);
+  drawXSimple(3, 8);
 
   //row3
-  drawX(-5, 8.75); 
-  drawX(-1, 8);
-  drawX(3, 10);
+  drawXSimple(-5, 8.75);
+  drawXSimple(-1, 8);
+  drawXSimple(3, 10);
+
+  drawCircleSimple(-5, 4.75);
+  drawCircleSimple(-1, 4);
+  drawCircleSimple(3, 6);
+
+  //row2
+  drawCircleSimple(-5, 6.75);
+  drawCircleSimple(-1, 6);
+  drawCircleSimple(3, 8);
+
+  //row3
+  drawCircleSimple(-5, 8.75);
+  drawCircleSimple(-1, 8);
+  drawCircleSimple(3, 10);
 }
 
 void offset() {
@@ -97,18 +111,49 @@ void drawX(double x, double y) {
   }
 }
 
+//Draws an X with four goTo() commands instead of 100
+void drawXSimple(double x, double y) {
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
+  goTo(x - HALF_X_WIDTH, y - HALF_X_WIDTH); // move to bottom left of x
+  elevator.moveTo(ELEVATOR_DOWN); // move down to draw
+  elevatorRun();
+  goTo((x - HALF_X_WIDTH) + 1, (y - HALF_X_WIDTH) + 1);
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
+  goTo(x - HALF_X_WIDTH, y + HALF_X_WIDTH); // move to top left of x
+  elevator.moveTo(ELEVATOR_DOWN); // move down to draw
+  elevatorRun();
+  goTo((x - HALF_X_WIDTH) + 1, (y + HALF_X_WIDTH) - 1);
+}
+
 //draws circle at (x,y) with radius .5 in
 
 void drawCircle(double x, double y) {
   elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
   elevatorRun();
+  elevator.moveTo(ELEVATOR_DOWN); //move up to avoid writing on board
+  elevatorRun();
+  goTo(CIRCLE_RADIUS + x, y);
   for (int i = 0; i < PRECISION; i++) {
-    if (i == 0) {
-      elevator.moveTo(ELEVATOR_DOWN); // move down to draw
-      elevatorRun();
-    }
-    goTo(CIRCLE_RADIUS * cos(9 * PI / 4 * i / PRECISION) + x, CIRCLE_RADIUS * sin(9 * PI / 4 * i / PRECISION) + y);
+    goTo(CIRCLE_RADIUS * cos(9 * PI * / 4 * i / PRECISION) + x, CIRCLE_RADIUS * sin(9 * PI * / 4 * i / PRECISION) + y);
   }
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
+}
+
+//draws "circle" composed of five points instead of 50
+void drawCircleSimple(double x, double y) {
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
+  goTo(CIRCLE_RADIUS + x, y);
+  elevator.moveTo(ELEVATOR_DOWN); //move up to avoid writing on board
+  elevatorRun();
+  for (int i = 0; i < 6; i++) {
+    goTo(CIRCLE_RADIUS * cos(5 * PI * / 2 * i / 5) + x, CIRCLE_RADIUS * sin(5 * PI * / 2 * i / 5) + y);
+  }
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
 }
 
 void goTo(double x, double y) {
@@ -152,6 +197,3 @@ double Z(double x, double y) {
   double c = sqrt(x * x + y * y);
   return degrees(acos((a * a + b * b - c * c) / (2 * a * b)));
 }
-
-
-
