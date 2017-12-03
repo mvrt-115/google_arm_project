@@ -19,7 +19,7 @@
 ## Rasberry Pi / Google Stuff
 - [x] Get example to run
 - [x] POF of rPi to Arduino via serial
-- [ ] Trigger example with button
+- [x] Trigger example with button
 - [ ] Write our own custom trait
 - [ ] Integrate TTT logic and control
 - [ ] Everything [else](https://imgur.com/gallery/RadSf)
