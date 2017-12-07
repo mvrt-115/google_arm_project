@@ -22,9 +22,9 @@
 #define JOINT_2_OFFSET  -3650 //in steps
 #define ELEVATOR_OFFSET -16000 //in steps 
 
-AccelStepper joint1(1, A3, A2); // 1, stp, dir
-AccelStepper joint2(1, A1, A0); //1, stp, dir
-AccelStepper elevator(1, A5, A4); //1, stp, dir
+AccelStepper joint1(1, 67, 66); // 1, stp, dir
+AccelStepper joint2(1, 65, 64); //1, stp, dir
+AccelStepper elevator(1, 69, 68); //1, stp, dir
 
 const double a = 6.44; // length of joint 1(closer to base) in inches
 const double b = 6.54; // length of joint 2(farther from base) in inches
