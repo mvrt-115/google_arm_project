@@ -1,5 +1,5 @@
 //elevator starts out with t-shaped piece resting on 3/32 diameter rod on hole above tape
-//arm starts out folded against right side of the elevator 
+//arm starts out folded against right side of the elevator
 
 #include <AccelStepper.h>;
 #include <Servo.h>;
@@ -20,7 +20,7 @@
 #define HALF_X_WIDTH .3536
 #define JOINT_1_OFFSET -2000 //in steps
 #define JOINT_2_OFFSET  -3650 //in steps
-#define ELEVATOR_OFFSET -16000 //in steps 
+#define ELEVATOR_OFFSET -16000 //in steps
 
 AccelStepper joint1(1, 67, 66); // 1, stp, dir
 AccelStepper joint2(1, 65, 64); //1, stp, dir
@@ -66,6 +66,8 @@ void offset() {
   joint1.setCurrentPosition(0);
   joint2.setCurrentPosition(0);
   elevator.setCurrentPosition(0);
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
 }
 
 void loop() {
@@ -80,7 +82,7 @@ void serialEvent() {
       if (xTurn)
         drawX(coords[inputInt*2], coords[inputInt*2+1]);
       else
-        drawCircles(coords[inputInt*2], coords[inputInt*2+1]);
+        drawCircle(coords[inputInt*2], coords[inputInt*2+1]);
       xTurn = !xTurn;
     }
   }
@@ -168,6 +170,3 @@ double Z(double x, double y) {
   double c = sqrt(x * x + y * y);
   return degrees(acos((a * a + b * b - c * c) / (2 * a * b)));
 }
-
-
-
