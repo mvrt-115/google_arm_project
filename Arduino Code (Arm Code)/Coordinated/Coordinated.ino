@@ -1,5 +1,5 @@
 //elevator starts out with t-shaped piece resting on 3/32 diameter rod on hole above tape
-//arm starts out folded against right side of the elevator 
+//arm starts out folded against right side of the elevator
 
 #include <AccelStepper.h>;
 #include <Servo.h>;
@@ -20,7 +20,7 @@
 #define HALF_X_WIDTH .3536
 #define JOINT_1_OFFSET -2000 //in steps
 #define JOINT_2_OFFSET  -3650 //in steps
-#define ELEVATOR_OFFSET -16000 //in steps 
+#define ELEVATOR_OFFSET -16000 //in steps
 
 AccelStepper joint1(1, 67, 66); // 1, stp, dir
 AccelStepper joint2(1, 65, 64); //1, stp, dir
@@ -29,6 +29,19 @@ AccelStepper elevator(1, 69, 68); //1, stp, dir
 const double a = 6.44; // length of joint 1(closer to base) in inches
 const double b = 6.54; // length of joint 2(farther from base) in inches
 
+double coords[20] = { // coordinate points in sets of (x,y) format, offset by 1
+  999.0, 999.0  // offset
+  0.0, 0.0, // position A1
+  0.0, 0.0, // position A2
+  0.0, 0.0, // position A3
+  0.0, 0.0, // position B1
+  0.0, 0.0, // position B2
+  0.0, 0.0, // position B3
+  0.0, 0.0, // position C1
+  0.0, 0.0, // position C2
+  0.0, 0.0  // position C3
+};
+
 void setup() {
   Serial.begin(BAUD_RATE);
   joint1.setAcceleration(JOINT_1_ACCELERATION);
@@ -36,21 +49,10 @@ void setup() {
   elevator.setAcceleration(ELEVATOR_ACCELERATION);
   elevator.setMaxSpeed(ELEVATOR_MAX_SPEED);
   offset();
-
-  //row1
-  drawX(-5, 4.75); 
-  drawX(-1, 4);
-  drawX(3, 6);
-
-  //row2
-  drawX(-5, 6.75); 
-  drawX(-1, 6);
-  drawX(3, 8);
-
-  //row3
-  drawX(-5, 8.75); 
-  drawX(-1, 8);
-  drawX(3, 10);
+  generateTable(-5.0, 4.75, 3.0, 10.0);
+  for (int i = 1; i < 10; i++) {
+    drawCircle(coords[i*2], coords[i*2+1]);
+  }
 }
 
 void offset() {
@@ -73,6 +75,18 @@ void loop() {
 void elevatorRun() {
   while (elevator.distanceToGo() > 0) {
     elevator.run();
+  }
+}
+
+//Generates a coordinate lookup table based off of two corners of the table.
+//The coordinates fed in must be the positions of A1 and C3, in that order.
+boolean generateTable(double x1, double y1, double x2, double y2){
+  deltaX = (x2-x1)/3.0;
+  deltaY = (y2-y1)/3.0;;
+  for (int i = 0, i < NUM_ROWS, i++){//Rows A, B, C
+    for (int j = 0, j < NUM_COLUMNS, j++){//Columns 1, 2, 3
+      coords[6*i+2*j+2] = x1 + deltaX*(double)(i);
+      coords[6*i+2*j+3] = y1 + deltaY*(double)(j);
   }
 }
 
@@ -152,6 +166,3 @@ double Z(double x, double y) {
   double c = sqrt(x * x + y * y);
   return degrees(acos((a * a + b * b - c * c) / (2 * a * b)));
 }
-
-
-
