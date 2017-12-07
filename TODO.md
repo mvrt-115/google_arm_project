@@ -3,11 +3,11 @@
 - [X] Coordinate system
 - [X] Draw Xs and Os
 - [X] Communicate with Pi
-- [ ] Integrate code w/ coords and Serial comms.
+- [X] Integrate code w/ coords and Serial comms.
 - [ ] Test simplified drawing cycles
-- [ ] Create scalable table feature
+- [X] Create scalable table feature
 - [ ] Test scalable table feature
-- [ ] Work with RPI group to standarize Serial comm syntax
+- [X] Work with RPI group to standarize Serial comm syntax
 
 ## Rasberry Pi / Google Stuff
 - [x] Get example to run
