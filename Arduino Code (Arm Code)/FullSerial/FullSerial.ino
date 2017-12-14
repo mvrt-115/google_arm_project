@@ -29,7 +29,7 @@ AccelStepper elevator(1, 69, 68); //1, stp, dir
 const double a = 6.44; // length of joint 1(closer to base) in inches
 const double b = 6.54; // length of joint 2(farther from base) in inches
 
-const double coords[18] = { // coordinate points in sets of (x,y) format, offset by 1
+const double coords[20] = { // coordinate points in sets of (x,y) format, offset by 1
   999.0, 999.0  // offset
   -5, 4.75, // position A1
   -1, 4, // position A2
@@ -51,7 +51,7 @@ void setup() {
   elevator.setAcceleration(ELEVATOR_ACCELERATION);
   elevator.setMaxSpeed(ELEVATOR_MAX_SPEED);
   offset();
-  Serial.write("Start");
+  Serial.println("Start");
 }
 
 void offset() {
@@ -76,6 +76,7 @@ void loop() {
 void serialEvent() {
   if (Serial.available()) {
     int inputInt = Serial.read() - '0';
+    Serial.println("recieved:" + inputInt);
     if (inputInt == 0)
       xTurn = true;
     else {
