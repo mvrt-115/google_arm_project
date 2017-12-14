@@ -1,0 +1,32 @@
+NOTE: EXAMPLE DO NOT USE OR PUBLISH AS ACTION
+{
+  "manifest": {
+    "displayName": "Blinky light",
+    "invocationName": "Blinky light",
+    "category": "PRODUCTIVITY"
+  },
+  "actions": [{
+    "name": "actions.devices",
+    "config": {
+      "@type": "type.googleapis.com/google.actions.v2.devices.DeviceControl",
+      "commands": [{
+        "intent": {
+          "name": "BlinkOnOff",
+          "parameters": [{
+            "name": "number",
+            "type": "SchemaOrg_Number"
+          }],
+          "trigger": {
+            "queryPatterns": [
+              "Blink $SchemaOrg_Number:number times"
+              ]
+            }
+          },
+          "directResponseFulfillment": {
+            "ttsPattern": "Blinking the light"
+          },
+          "requiredTraits": ["Blink"]
+        }]
+      }
+  }]
+}

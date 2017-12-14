@@ -27,7 +27,7 @@ class Board:
             self.board[move] = letter
             return True
         else:
-            print("Error: Already occupied twat")
+            print("Error: Already occupied")
             return False
 
     def isWinner(self, le):
@@ -95,7 +95,7 @@ class TTTGame:
         return self.letter
 
     def getComputerMove(self):
-        print('fuck this program')
+        print('i cant code')
 
     # more stuff
 
