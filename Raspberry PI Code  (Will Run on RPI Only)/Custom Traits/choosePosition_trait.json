@@ -17,14 +17,14 @@
           }],
           "trigger": {
             "queryPatterns": [
-              "Blink $SchemaOrg_Number:number times"
+              "Move To (Position) $SchemaOrg_Number:pos"
               ]
             }
           },
           "directResponseFulfillment": {
-            "ttsPattern": "Blinking the light"
+            "ttsPattern": "Placing piece at $pos"
           },
-          "requiredTraits": ["Blink"]
+          "requiredTraits": ["ChoosePos"]
         }]
       }
   }]
