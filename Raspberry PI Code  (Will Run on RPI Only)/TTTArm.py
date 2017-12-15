@@ -1,5 +1,23 @@
 # Tic Tac Toe class object with arm interactions
-import random
+# Custom Traits (triggerd from pushtotalk.py):
+#             -startGame
+#             -setLetter
+#             -choosePosition
+# Game Logic: -when startGame is triggered, create a new game and override any existing ones
+#             -player can select letter through setLetter (default letter is x)
+#             -IF player letter is 'O':
+#                 -calculate starting move and send signal to arm to draw X at calculated postition
+#                 -wait for arm to finish and signal when done
+#             -repeat until game is finished:
+#                 -wait for input from choosePostition
+#                 -place player letter at input position
+#                 -calculate computer move and place opposite letter
+#                 -wait for arm to finish and signal when done
+#             -draw winning line
+
+
+
+# This code is messy and weird, the structure will probably change
 import serial
 
 class Arm:

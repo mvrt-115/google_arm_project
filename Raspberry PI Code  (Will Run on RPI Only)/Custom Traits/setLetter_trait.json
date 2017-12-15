@@ -1,7 +1,7 @@
 {
   "manifest": {
-    "displayName": "Choose position",
-    "invocationName": "Choose position",
+    "displayName": "Set letter",
+    "invocationName": "Set letter",
     "category": "PRODUCTIVITY"
   },
   "actions": [{
@@ -10,21 +10,21 @@
       "@type": "type.googleapis.com/google.actions.v2.devices.DeviceControl",
       "commands": [{
         "intent": {
-          "name": "ChoosePos",
+          "name": "SetLetter",
           "parameters": [{
             "name": "number",
             "type": "SchemaOrg_Number"
           }],
           "trigger": {
             "queryPatterns": [
-              "Move To (Position)? $SchemaOrg_Number:pos"
+              "(Set me letter to)? $SchemaOrg_Text:letter"
               ]
             }
           },
           "directResponseFulfillment": {
-            "ttsPattern": "Placing piece at $pos ."
+            "ttsPattern": "Ok, setting letter to $letter . X will go first."
           },
-          "requiredTraits": ["ChoosePos"]
+          "requiredTraits": ["SetLetter"]
         }]
       }
   }]

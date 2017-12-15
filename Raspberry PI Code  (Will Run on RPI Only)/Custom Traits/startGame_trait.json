@@ -1,7 +1,7 @@
 {
   "manifest": {
-    "displayName": "Choose position",
-    "invocationName": "Choose position",
+    "displayName": "Start game",
+    "invocationName": "Start game",
     "category": "PRODUCTIVITY"
   },
   "actions": [{
@@ -10,21 +10,21 @@
       "@type": "type.googleapis.com/google.actions.v2.devices.DeviceControl",
       "commands": [{
         "intent": {
-          "name": "ChoosePos",
+          "name": "StartGame",
           "parameters": [{
             "name": "number",
             "type": "SchemaOrg_Number"
           }],
           "trigger": {
             "queryPatterns": [
-              "Move To (Position)? $SchemaOrg_Number:pos"
+              "Start a (new)? (Tic Tac Toe)? game"
               ]
             }
           },
           "directResponseFulfillment": {
-            "ttsPattern": "Placing piece at $pos ."
+            "ttsPattern": "Ok, starting a new game. What letter would you like to be: X or O?"
           },
-          "requiredTraits": ["ChoosePos"]
+          "requiredTraits": ["StartGame"]
         }]
       }
   }]
