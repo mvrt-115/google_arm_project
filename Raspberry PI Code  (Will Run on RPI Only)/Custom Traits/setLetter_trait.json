@@ -17,7 +17,7 @@
           }],
           "trigger": {
             "queryPatterns": [
-              "(Set me letter to)? $SchemaOrg_Text:letter"
+              "(Set my letter to)? $SchemaOrg_Text:letter"
               ]
             }
           },

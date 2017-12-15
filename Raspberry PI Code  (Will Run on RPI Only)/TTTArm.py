@@ -4,9 +4,9 @@
 #             -setLetter
 #             -choosePosition
 # Game Logic: -when startGame is triggered, create a new game and override any existing ones
-#             -player can select letter through setLetter (default letter is x)
+#             -player can select letter ('X' or 'O') through setLetter (default letter is 'X')
 #             -IF player letter is 'O':
-#                 -calculate starting move and send signal to arm to draw X at calculated postition
+#                 -calculate starting move and send signal to arm to draw 'X' at calculated postition
 #                 -wait for arm to finish and signal when done
 #             -repeat until game is finished:
 #                 -wait for input from choosePostition
@@ -14,11 +14,12 @@
 #                 -calculate computer move and place opposite letter
 #                 -wait for arm to finish and signal when done
 #             -draw winning line
-
+# We may use a tts library for feedback to the user, most likely gTTS
 
 
 # This code is messy and weird, the structure will probably change
 import serial
+from gtts import gTTS
 
 class Arm:
     def __init__(self, port):
@@ -109,40 +110,23 @@ class Board: # Should be complete
 class TTTGame:
     def __init__(self):
         self.board = Board()
-        self.playerLetter = 0 # 0 = blank, 1 = X, 2 = O
+        self.playerLetter = 1 # 1 = 'X', 2 = 'O'
         # self.arm = Arm('/dev/ttyACM0')
 
-    def draw(self):
-        # Prints the board, mainly used for debugging.
-        self.board.draw()
-
-    def whichTurn(self,letter):
-        # Determines the letter for the current turn.
-        if letter == 1:
-            return 2
-        return 1
-
-
-    def makeMove(self, letter, move):
-        # Moves the letter (determined by whichTurn()) to the imput move.
-        # Upon being verified, sends a signal for the arm to physically draw the letter at the postion.
-        if self.board.makeMove(letter, move):
-            print('Ok: ' + str(letter) + ' can be placed at ' + str(move))
+    def makeMove(self, move): # Not done yet
+        # Makes a move on the board with the player letter at input position.
+        # Calculates the next move and places it at the position with the other letter.
+        # Checks for winners. If so, sends the signal to draws the win line.
+        if self.board.makeMove(self.playerLetter, move):
+            print('Ok: ' + str(self.playerLetter) + ' can be placed at ' + str(move))
             # self.arm.movePos(letter,move)
+            # Check for winners. If winner, draw line
+            self.getComputerMove()# Calculate next move and place
+            # Wait for finished signal before procceding
+            # Check for winners. If winner, draw line
         else:
-            print('Error: ' + str(letter) + ' cannot be placed at ' + str(move))
-
-    def isWinner(self, le):
-        # Checks if the given letter has won.
-        if self.board.isWinner(le):
-            return True
-        return False
-
-    def isBoardFull(self):
-        # Checks if the board is full.
-        if self.board.isBoardFull():
-            return True
-        return False
+            print('Error: ' + str(self.playerLetter) + ' cannot be placed at ' + str(move))
+            # Use gTTS to play error message
 
     def setPLetter(self, le):
         self.playerLetter = le
@@ -153,10 +137,6 @@ class TTTGame:
         # Determines the optimal move for the computer.
         print('i cant code') # use logic from ttt test code
 
-    # Game logic and more need to be added
-    # Not sure how to have the game "run", but still take input from pushtotalk program
-    # Game Logic may have to be implemented in pushtotalk program
-
     def quit(self):
         # self.arm.close()
         exit()
@@ -165,11 +145,9 @@ class TTTGame:
 #Testing:
 print('Testing:')
 g = TTTGame()
-g.makeMove(1,5)
-g.makeMove(1,1)
-g.makeMove(1,9)
-g.makeMove(1,9)
-g.draw()
-print('X is winner: ' + str(g.isWinner(1)))
-print('Is board full: ' + str(g.isBoardFull()))
+g.makeMove(5)
+g.makeMove(1)
+g.makeMove(9)
+g.makeMove(9)
+g.board.draw()
 g.quit()

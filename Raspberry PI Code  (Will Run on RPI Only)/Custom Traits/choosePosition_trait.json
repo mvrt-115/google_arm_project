@@ -22,7 +22,7 @@
             }
           },
           "directResponseFulfillment": {
-            "ttsPattern": "Placing piece at $pos ."
+            "ttsPattern": "Placing piece at position $pos ."
           },
           "requiredTraits": ["ChoosePos"]
         }]
