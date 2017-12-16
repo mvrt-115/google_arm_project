@@ -1,6 +1,5 @@
 # Tic Tac Toe class object with arm interactions
 
-# This code is messy and weird, the structure will probably change
 import serial
 from gtts import gTTS
 
@@ -14,14 +13,17 @@ class Arm:
             print('Failed to open port: ' + port)
             exit()
     
+    # Communication with Arduino
+    # decode('utf-8') converts bytes into string
+    # read_until('$') $ will be used as dividers between messages
+    # Gautham knows the most about the communication part
+
     def isBusy(self):
         # Checkes if the Arduino is busy.
         self.ser.write(b'Busy$')
         if self.ser.read_until('$').decode('utf-8') == 'busy':
             return True
         return False
-
-    # Communication with Arduino
 
     def movePos(self, letter, move):
         # Sends a signal to the arm to draw the input letter at the input position.
@@ -36,7 +38,7 @@ class Arm:
         print('Falied: Arduino is Busy')
         return False
 
-    # Optional commands can be added
+    # draw win line method needed, refer to communication file
 
     def close(self):
         # Closes the serial port.
@@ -71,7 +73,7 @@ class Board: # Should be complete
             print("Error: Already occupied")
             return False
 
-    def isWinner(self, le):
+    def isWinner(self, le): # Not done yet
         # Given a board and a letter, this function returns True if that letter has won.
         # Using bo instead of board and le instead of letter.
         return ((self.board[7] == le and self.board[8] == le and self.board[9] == le) or # across the top
@@ -82,6 +84,7 @@ class Board: # Should be complete
         (self.board[9] == le and self.board[6] == le and self.board[3] == le) or # down the right side
         (self.board[7] == le and self.board[5] == le and self.board[3] == le) or # diagonal
         (self.board[9] == le and self.board[5] == le and self.board[1] == le)) # diagonal
+        # Add way to know which line won
 
     def isBoardFull(self):
         # Return True if every space on the board has been taken. Otherwise return False.
@@ -103,25 +106,30 @@ class TTTGame:
         if self.board.makeMove(self.playerLetter, move):
             print('Ok: ' + str(self.playerLetter) + ' can be placed at ' + str(move))
             # self.arm.movePos(letter,move)
-            # Check for winners. If winner, draw line
+            # Check for winners. If winner, draw line and return winning letter
+            # Check if board is full. If full return 'tie'
             self.getComputerMove()# Calculate next move and place
             # Wait for finished signal before procceding
-            # Check for winners. If winner, draw line
+            # Check for winners. If winner, draw line and return winning letter
+            # Check if board is full. If full return 'tie'
+            return 'Succes'
         else:
             print('Error: ' + str(self.playerLetter) + ' cannot be placed at ' + str(move))
-            # Use gTTS to play error message
+            return 'Fail'
 
     def setPLetter(self, le):
         self.playerLetter = le
+        # If player letter it 'O':
+            # Make first move with computer as X
     def getPLetter(self):
         return self.playerLetter
 
     def getComputerMove(self):
-        # Determines the optimal move for the computer.
-        print('i cant code') # use logic from ttt test code
+        # Determines the optimal move for the computer and tells arm to do so.
+        print('i cant code') # use logic form other code (impossible difficulty)
 
     def quit(self):
-        # self.arm.close()
+        # self.arm.close() # Close Serial Port
         exit()
 
 

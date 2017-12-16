@@ -367,22 +367,47 @@ def main(api_endpoint, credentials, device_id, verbose,
     @device_handler.command('StartGame')
     def startGame(game):
         logging.info('Starting new game')
+        # Real TTS System
         os.system('omxplayer newGame.mp3')
+        # Fake TSS System (better sounding):
+        # os.system('omxplayer TTS Audio/start.wav')
+        # os.system('omxplayer TTS Audio/XorO.wav')
 
     @device_handler.command('SetLetter')
     def setLetter(letter):
-       logging.info('Setting player letter to ' + str(letter))
-       tts = gTTS(text=('Setting letter to ' + str(letter)),lang='en')
-       tts.save('temp.mp3')
-       os.system('omxplayer temp.mp3')
-       os.system('omxplayer first.mp3')
+        logging.info('Setting player letter to ' + str(letter))
+        # Real TTS System
+        tts = gTTS(text=('Setting letter to ' + str(letter)),lang='en')
+        # set player letter to letter
+        tts.save('temp.mp3')
+        os.system('omxplayer temp.mp3')
+        os.system('omxplayer first.mp3')
+        # Fake TSS System (better sounding):
+        # if 'x' in letter:
+        #     os.system('omxplayer TTS Audio/letterX.wav')
+        #         # set player letter to x
+        # elif 'o' in letter:
+        #     os.system('omxplayer TTS Audio/letterO.wav')
+        #         # set player letter to o
+        # os.system('omxplayer TTS Audio/xFirst.wav')
 
     @device_handler.command('ChoosePos')
     def choosePos(pos):
-       logging.info('Placing piece at postition ' + str(pos))
-       tts = gTTS(text=('Placing piece at postition ' + str(pos)),lang='en')
-       tts.save('tempP.mp3')
-       os.system('omxplayer tempP.mp3')
+        logging.info('Placing piece at postition ' + str(pos))
+        # Real TTS System
+        tts = gTTS(text=('Placing piece at postition ' + str(pos)),lang='en')
+        # call makemove and pass pos
+        tts.save('tempP.mp3')
+        os.system('omxplayer tempP.mp3')
+        # Fake TSS System (better sounding):
+        # If spot is open:
+        # os.system('omxplayer TTS Audio/p' + str(pos) + '.wav')
+        # call makemove and pass pos
+        # If spot is closed:
+        # os.system('omxplayer TTS Audio/occupied.wav')
+        # os.system('omxplayer TTS Audio/again.wav')
+        
+
         
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
