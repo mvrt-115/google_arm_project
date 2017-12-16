@@ -12,7 +12,7 @@
         "intent": {
           "name": "ChoosePos",
           "parameters": [{
-            "name": "number",
+            "name": "pos",
             "type": "SchemaOrg_Number"
           }],
           "trigger": {

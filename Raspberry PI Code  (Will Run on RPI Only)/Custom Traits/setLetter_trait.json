@@ -12,17 +12,17 @@
         "intent": {
           "name": "SetLetter",
           "parameters": [{
-            "name": "number",
-            "type": "SchemaOrg_Number"
+            "name": "letter",
+            "type": "SchemaOrg_Text"
           }],
           "trigger": {
             "queryPatterns": [
-              "(Set my letter to)? $SchemaOrg_Text:letter"
+              "Set my letter to $SchemaOrg_Text:letter"
               ]
             }
           },
           "directResponseFulfillment": {
-            "ttsPattern": "Ok, setting letter to $letter . X will go first."
+            "ttsPattern": "Ok. setting letter to $letter . X will go first."
           },
           "requiredTraits": ["SetLetter"]
         }]

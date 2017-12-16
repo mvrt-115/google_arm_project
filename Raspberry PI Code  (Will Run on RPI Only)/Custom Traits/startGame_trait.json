@@ -12,17 +12,17 @@
         "intent": {
           "name": "StartGame",
           "parameters": [{
-            "name": "number",
-            "type": "SchemaOrg_Number"
+            "name": "game",
+            "type": "SchemaOrg_Text"
           }],
           "trigger": {
             "queryPatterns": [
-              "Start a (new)? (Tic Tac Toe)? game"
+              "Start a new Tic Tac Toe $SchemaOrg_Text:game"
               ]
             }
           },
           "directResponseFulfillment": {
-            "ttsPattern": "Ok, starting a new game. What letter would you like to be: X or O?"
+            "ttsPattern": "Ok. Starting a new game. What letter would you like to be. X or O."
           },
           "requiredTraits": ["StartGame"]
         }]
