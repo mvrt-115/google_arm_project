@@ -3,7 +3,7 @@
 #             -startGame
 #             -setLetter
 #             -choosePosition
-# Game Logic: -when startGame is triggered, create a new game and override any existing ones
+# Game Logic (Main program is pushtotalk): -when startGame is triggered, create a new game and override any existing ones
 #             -player can select letter ('X' or 'O') through setLetter (default letter is 'X')
 #             -IF player letter is 'O':
 #                 -calculate starting move and send signal to arm to draw 'X' at calculated postition
@@ -14,7 +14,7 @@
 #                 -calculate computer move and place opposite letter
 #                 -wait for arm to finish and signal when done
 #             -draw winning line
-# We may use a tts library for feedback to the user, most likely gTTS
+# We will gTTS for TTS, just follow the examples given
 
 
 # This code is messy and weird, the structure will probably change
