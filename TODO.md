@@ -10,15 +10,7 @@
 - [X] Work with RPI group to standarize Serial comm syntax
 
 ## Rasberry Pi / Google Stuff
-- [x] Get example to run
-- [x] POF of rPi to Arduino via serial
-- [x] Trigger example with button
-- [ ] Add LED that lights up when prompting
-- [ ] Write our own custom traits
-- [ ] Integrate traits into code
-- [ ] Convert current TTT code into a class so it can be used as library
-- [ ] Use created library/class to enable TTT in pushtotalk.py
-- [ ] Everything [else](https://imgur.com/gallery/RadSf)
+- Check Custom Traits Branch
 
 ## Other
 - [ ] Make enclosure for electronics
