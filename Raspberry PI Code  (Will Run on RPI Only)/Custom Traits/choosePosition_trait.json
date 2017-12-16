@@ -17,7 +17,7 @@
           }],
           "trigger": {
             "queryPatterns": [
-              "Move To (Position)? $SchemaOrg_Number:pos"
+              "Move to (position)? $SchemaOrg_Number:pos"
               ]
             }
           },
