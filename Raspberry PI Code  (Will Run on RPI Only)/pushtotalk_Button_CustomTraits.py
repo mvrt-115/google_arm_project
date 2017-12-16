@@ -12,6 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Custom Traits (triggerd from pushtotalk.py):
+#             -startGame
+#             -setLetter
+#             -choosePosition
+# Game Logic (Main program is pushtotalk): -when startGame is triggered, create a new game and override any existing ones
+#             -player can select letter ('X' or 'O') through setLetter (default letter is 'X')
+#             -IF player letter is 'O':
+#                 -calculate starting move and send signal to arm to draw 'X' at calculated postition
+#                 -wait for arm to finish and signal when done
+#             -repeat until game is finished:
+#                 -wait for input from choosePostition
+#                 -place player letter at input position
+#                 -calculate computer move and place opposite letter
+#                 -wait for arm to finish and signal when done
+#             -draw winning line
+# We will gTTS for TTS, just follow the examples given
+
 """Sample that implements a gRPC client for the Google Assistant API."""
 
 import concurrent.futures
