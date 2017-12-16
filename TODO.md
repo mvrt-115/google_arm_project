@@ -11,12 +11,16 @@
 
 ## Rasberry Pi / Google Stuff
 - [x] Get example to run
-- [x] POF of rPi to Arduino via serial
+- [x] PoC of rPi to Arduino via serial
 - [x] Trigger example with button
 - [ ] Add LED that lights up when prompting
-- [ ] Write our own custom traits
+- [x] Write our own custom traits
+- [ ] Figure out how to enable mutliple custom traits at once
 - [ ] Integrate traits into code
+  - Each `@devicehandler` serves as a method call when the trait is triggered
+  - Inside each method, use the TTTARM code to play the game
 - [ ] Convert current TTT code into a class so it can be used as library
+  - The overall structure is on top of the TTTARM.py file
 - [ ] Use created library/class to enable TTT in pushtotalk.py
 - [ ] Everything [else](https://imgur.com/gallery/RadSf)
 
