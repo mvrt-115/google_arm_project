@@ -1,5 +1,5 @@
 # Tic Tac Toe class object with arm interactions
-
+import random
 import serial
 from gtts import gTTS
 
@@ -89,9 +89,18 @@ class Board: # Should be complete
     def isBoardFull(self):
         # Return True if every space on the board has been taken. Otherwise return False.
         for i in range(1, 10):
-            if self.board[i] == 0:
+            if self.board.board[i] == 0:
                 return False
         return True
+
+    def getBoardCopy(self):
+        # Make a duplicate of the board list and return it the duplicate.
+        dupeBoard = Board()
+
+        for i in self.board:
+            dupeBoard.board[i] = i
+
+        return dupeBoard
 
 class TTTGame:
     def __init__(self):
@@ -100,6 +109,11 @@ class TTTGame:
         # self.arm = Arm('/dev/ttyACM0')
 
     def makeMove(self, move): # Not done yet
+        # Given a board and the computer's letter, determine where to move and return that move.
+        if self.playerLetter == 1:
+            computerLetter = 2
+        else:
+            computerLetter = 1
         # Makes a move on the board with the player letter at input position.
         # Calculates the next move and places it at the position with the other letter.
         # Checks for winners. If so, sends the signal to draws the win line.
@@ -108,7 +122,7 @@ class TTTGame:
             # self.arm.movePos(letter,move)
             # Check for winners. If winner, draw line and return winning letter
             # Check if board is full. If full return 'tie'
-            self.getComputerMove()# Calculate next move and place
+            self.board.makeMove(computerLetter, self.getComputerMove(computerLetter))# Calculate next move and place
             # Wait for finished signal before procceding
             # Check for winners. If winner, draw line and return winning letter
             # Check if board is full. If full return 'tie'
@@ -124,9 +138,76 @@ class TTTGame:
     def getPLetter(self):
         return self.playerLetter
 
-    def getComputerMove(self):
+    def chooseRandomMoveFromList(self, movesList):
+        # Returns a valid move from the passed list on the passed board.
+        # Returns None if there is no valid move.
+        possibleMoves = []
+        for i in movesList:
+            if self.board.board[i] == 0:
+                possibleMoves.append(i)
+
+        if len(possibleMoves) != 0:
+            return random.choice(possibleMoves)
+        else:
+            return None
+    
+    def testWinMove(self, board, letter, i):
+        # i = the square to check if makes a win.
+        bCopy = board.getBoardCopy()
+        bCopy.board[i] = letter
+        return bCopy.isWinner(letter)
+
+    def testForkMove(self, letter, i):
+        # Determines if a move opens up a fork.
+        bCopy = self.board.getBoardCopy()
+        bCopy.board[i] = letter
+        winningMoves = 0
+        for j in range(1, 10):
+            if self.testWinMove(bCopy, letter, j) and bCopy[j] == 0:
+                winningMoves += 1
+        return winningMoves >= 2
+
+    def getComputerMove(self, computerLetter):
         # Determines the optimal move for the computer and tells arm to do so.
-        print('i cant code') # use logic form other code (impossible difficulty)
+
+        # Here is our algorithm for our Tic Tac Toe AI:
+        # First, check if we can win in the next move.
+        for i in range(1, 10):
+            if self.board.board[i] == 0 and self.testWinMove(self.board, computerLetter, i):
+                return i
+
+        # Check if the player could win on his next move, and block them.
+        for i in range(1, 10):
+            if self.board.board[i] == 0 and self.testWinMove(self.board, self.playerLetter, i):
+                return i
+
+        # Check for computer fork opportunities.
+        for i in range(1, 10):
+            if self.board.board[i] == 0 and self.testForkMove(computerLetter, i):
+                return i
+        
+        # Check player fork opportunities, incl. two forks, and block them.
+        playerForks = 0
+        for i in range(1, 10):
+            if self.board.board[i] == 0 and self.testForkMove(self.playerLetter, i):
+                playerForks += 1
+                tempMove = i
+        if playerForks == 1:
+            return tempMove
+        elif playerForks == 2:
+            return self.chooseRandomMoveFromList([2, 4, 6, 8])
+
+        # Try to take the center, if it is free.
+        if self.board.board[5] == 0:
+            return 5
+
+        # Try to take one of the corners, if they are free.
+        move = self.chooseRandomMoveFromList([1, 3, 7, 9])
+        if move != None:
+            return move
+
+        # Move on one of the sides.
+        return self.chooseRandomMoveFromList([2, 4, 6, 8])
 
     def quit(self):
         # self.arm.close() # Close Serial Port
