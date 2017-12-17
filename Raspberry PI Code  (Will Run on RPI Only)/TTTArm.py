@@ -3,15 +3,16 @@ import random
 import serial
 from gtts import gTTS
 
-class Arm:
+class Arm: # Uncomment stuff when arm is actually connected
     def __init__(self, port):
-        try:
-            self.ser = serial.Serial(port, 115200) # Open serial line
-            while self.ser.read_until('$').decode('utf-8') != 'ready':
-                self.ser.write(b'N$')
-        except  serial.serialutil.SerialException:
-            print('Failed to open port: ' + port)
-            exit()
+        # try:
+        #     self.ser = serial.Serial(port, 115200) # Open serial line
+        #     while self.ser.read_until('$').decode('utf-8') != 'ready':
+        #         self.ser.write(b'N$')
+        # except  serial.serialutil.SerialException:
+        #     print('Failed to open port: ' + port)
+        #     exit()
+        print('Starting Arm')
     
     # Communication with Arduino
     # decode('utf-8') converts bytes into string
@@ -20,29 +21,32 @@ class Arm:
 
     def isBusy(self):
         # Checkes if the Arduino is busy.
-        self.ser.write(b'Busy$')
-        if self.ser.read_until('$').decode('utf-8') == 'busy':
-            return True
+        # self.ser.write(b'Busy$')
+        # if self.ser.read_until('$').decode('utf-8') == 'busy':
+            # return True
         return False
 
-    def movePos(self, letter, move):
+    def movePos(self, letter, move): # Not done yet
         # Sends a signal to the arm to draw the input letter at the input position.
-        if self.isBusy() != True:
-            self.ser.write(b('P'+str(letter)+str(move)+'$'))
-            if self.ser.read_until('$').decode('utf-8') == 'Invalid':
-                print('Falied: Invalid request')
-                return False
-            else:
-                print('Success: ' + str(letter) + ' placed at ' + str(move))
-                return True
-        print('Falied: Arduino is Busy')
-        return False
+        # if self.isBusy() != True:
+            # self.ser.write(b('P'+str(letter)+str(move)+'$'))
+            # if self.ser.read_until('$').decode('utf-8') == 'Invalid':
+                # print('Falied: Invalid request')
+                # return False
+            # else:
+                # print('Success: ' + str(letter) + ' placed at ' + str(move))
+                # return True
+        # print('Falied: Arduino is Busy')
+        # return False
+        # Wait for finished signal
+        return True # Testing
 
-    # draw win line method needed, refer to communication file
+    def drawWinLine(self, winNum):
+        print(str(winNum))
 
     def close(self):
         # Closes the serial port.
-        self.ser.close()
+        # self.ser.close()
         print('Serial port closed')
 
 class Board: # Should be complete
@@ -73,23 +77,23 @@ class Board: # Should be complete
             print("Error: Already occupied")
             return False
 
-    def isWinner(self, le): # Not done yet
-        # Given a board and a letter, this function returns True if that letter has won.
+    def isWinner(self, le):
+        # Given a board and a letter, this function returns a number corresponding to the win line if that letter has won.
         # Using bo instead of board and le instead of letter.
-        return ((self.board[7] == le and self.board[8] == le and self.board[9] == le) or # across the top
-        (self.board[4] == le and self.board[5] == le and self.board[6] == le) or # across the middle
-        (self.board[1] == le and self.board[2] == le and self.board[3] == le) or # across the bottom
-        (self.board[7] == le and self.board[4] == le and self.board[1] == le) or # down the left side
-        (self.board[8] == le and self.board[5] == le and self.board[2] == le) or # down the middle
-        (self.board[9] == le and self.board[6] == le and self.board[3] == le) or # down the right side
-        (self.board[7] == le and self.board[5] == le and self.board[3] == le) or # diagonal
-        (self.board[9] == le and self.board[5] == le and self.board[1] == le)) # diagonal
-        # Add way to know which line won
+        if (self.board[7] == le and self.board[8] == le and self.board[9] == le): return 1 # across the top
+        elif (self.board[4] == le and self.board[5] == le and self.board[6] == le): return 2 # across the middle
+        elif (self.board[1] == le and self.board[2] == le and self.board[3] == le): return 3 # across the bottom
+        elif (self.board[7] == le and self.board[4] == le and self.board[1] == le): return 4 # down the left side
+        elif (self.board[8] == le and self.board[5] == le and self.board[2] == le): return 5 # down the middle
+        elif (self.board[9] == le and self.board[6] == le and self.board[3] == le): return 6 # down the right side
+        elif (self.board[7] == le and self.board[5] == le and self.board[3] == le): return 7 # diagonal
+        elif (self.board[9] == le and self.board[5] == le and self.board[1] == le): return 8# diagonal
+        return 0
 
     def isBoardFull(self):
         # Return True if every space on the board has been taken. Otherwise return False.
         for i in range(1, 10):
-            if self.board.board[i] == 0:
+            if self.board[i] == 0:
                 return False
         return True
 
@@ -106,7 +110,7 @@ class TTTGame:
     def __init__(self):
         self.board = Board()
         self.playerLetter = 1 # 1 = 'X', 2 = 'O'
-        # self.arm = Arm('/dev/ttyACM0')
+        self.arm = Arm('/dev/ttyACM0')
 
     def makeMove(self, move): # Not done yet
         # Given a board and the computer's letter, determine where to move and return that move.
@@ -119,17 +123,23 @@ class TTTGame:
         # Checks for winners. If so, sends the signal to draws the win line.
         if self.board.makeMove(self.playerLetter, move):
             print('Ok: ' + str(self.playerLetter) + ' can be placed at ' + str(move))
-            # self.arm.movePos(letter,move)
-            # Check for winners. If winner, draw line and return winning letter
-            # Check if board is full. If full return 'tie'
+            # self.arm.movePos(self.playerLetter,move)
+            if self.board.isWinner(self.playerLetter) > 0:
+                self.arm.drawWinLine(self.board.isWinner(self.playerLetter))
+                return self.playerLetter # Player Won
+            elif self.board.isBoardFull():
+                return 0 # Tie
+            print('Making Comp Move') # Testing
             self.board.makeMove(computerLetter, self.getComputerMove(computerLetter))# Calculate next move and place
-            # Wait for finished signal before procceding
-            # Check for winners. If winner, draw line and return winning letter
-            # Check if board is full. If full return 'tie'
-            return 'Succes'
+            # self.arm.movePos(computerLetter,move)
+            if self.board.isWinner(computerLetter) > 0:
+                self.arm.drawWinLine(self.board.isWinner(computerLetter))
+                return computerLetter # Computer Won
+            elif self.board.isBoardFull():
+                return 0 # Tie
         else:
             print('Error: ' + str(self.playerLetter) + ' cannot be placed at ' + str(move))
-            return 'Fail'
+            return -1
 
     def setPLetter(self, le):
         self.playerLetter = le
@@ -155,7 +165,7 @@ class TTTGame:
         # i = the square to check if makes a win.
         bCopy = board.getBoardCopy()
         bCopy.board[i] = letter
-        return bCopy.isWinner(letter)
+        return bCopy.isWinner(letter) > 0
 
     def testForkMove(self, letter, i):
         # Determines if a move opens up a fork.
@@ -170,7 +180,6 @@ class TTTGame:
     def getComputerMove(self, computerLetter):
         # Determines the optimal move for the computer and tells arm to do so.
 
-        # Here is our algorithm for our Tic Tac Toe AI:
         # First, check if we can win in the next move.
         for i in range(1, 10):
             if self.board.board[i] == 0 and self.testWinMove(self.board, computerLetter, i):
@@ -217,9 +226,12 @@ class TTTGame:
 #Testing:
 print('Testing:')
 g = TTTGame()
-g.makeMove(5)
-g.makeMove(1)
-g.makeMove(9)
-g.makeMove(9)
+print(str(g.makeMove(5)))
+g.board.draw()
+print(str(g.makeMove(1)))
+g.board.draw()
+print(str(g.makeMove(9)))
+g.board.draw()
+print(str(g.makeMove(9)))
 g.board.draw()
 g.quit()
