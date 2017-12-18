@@ -85,7 +85,7 @@ void loop() {
 }
 
 void elevatorRun() {
-  while (elevator.distanceToGo() > 0) {
+  while (abs(elevator.distanceToGo()) > 0) {
     elevator.run();
   }
 }
