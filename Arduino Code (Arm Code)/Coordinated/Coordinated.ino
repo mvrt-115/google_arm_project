@@ -29,8 +29,7 @@ AccelStepper elevator(1, 69, 68); //1, stp, dir
 const double a = 6.44; // length of joint 1(closer to base) in inches
 const double b = 6.54; // length of joint 2(farther from base) in inches
 
-double coords[20] = { // coordinate points in sets of (x,y) format, offset by 1
-  999.0, 999.0  // offset
+double coords[18] = { // coordinate points in sets of (x,y) format
   0.0, 0.0, // position A1
   0.0, 0.0, // position A2
   0.0, 0.0, // position A3
@@ -51,7 +50,7 @@ void setup() {
   offset();
   generateTable(-5.0, 4.75, 3.0, 10.0);
   for (int i = 1; i < 10; i++) {
-    drawCircle(coords[i*2], coords[i*2+1]);
+    drawCircle(coords[i*2-2], coords[i*2-1]);
   }
 }
 
@@ -85,8 +84,11 @@ boolean generateTable(double x1, double y1, double x2, double y2){
   deltaY = (y2-y1)/3.0;;
   for (int i = 0, i < NUM_ROWS, i++){//Rows A, B, C
     for (int j = 0, j < NUM_COLUMNS, j++){//Columns 1, 2, 3
-      coords[6*i+2*j+2] = x1 + deltaX*(double)(i);
-      coords[6*i+2*j+3] = y1 + deltaY*(double)(j);
+      coords[6*i+2*j] = x1 + deltaX*(double)(i);
+      coords[6*i+2*j+1] = y1 + deltaY*(double)(j);
+      Serial.println(coords[6*i+2*j]);
+      Serial.println(coords[6*i+2*j+1]);
+    }
   }
 }
 
