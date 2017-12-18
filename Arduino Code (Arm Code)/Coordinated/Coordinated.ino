@@ -4,6 +4,8 @@
 #include <AccelStepper.h>;
 #include <Servo.h>;
 
+#define NUM_ROWS 3
+#define NUM_COLUMNS 3
 #define BAUD_RATE 115200
 #define ELEVATOR_TOLERANCE 200
 #define ARM_STEPS 6400 //steps per rotation for joint 1 and joint 2 stepper motors
@@ -80,10 +82,10 @@ void elevatorRun() {
 //Generates a coordinate lookup table based off of two corners of the table.
 //The coordinates fed in must be the positions of A1 and C3, in that order.
 boolean generateTable(double x1, double y1, double x2, double y2){
-  deltaX = (x2-x1)/3.0;
-  deltaY = (y2-y1)/3.0;;
-  for (int i = 0, i < NUM_ROWS, i++){//Rows A, B, C
-    for (int j = 0, j < NUM_COLUMNS, j++){//Columns 1, 2, 3
+  double deltaX = (x2-x1)/3.0;
+  double deltaY = (y2-y1)/3.0;
+  for (int i = 0; i < NUM_ROWS; i++){//Rows A, B, C
+    for (int j = 0; j < NUM_COLUMNS; j++){//Columns 1, 2, 3
       coords[6*i+2*j] = x1 + deltaX*(double)(i);
       coords[6*i+2*j+1] = y1 + deltaY*(double)(j);
       Serial.println(coords[6*i+2*j]);
