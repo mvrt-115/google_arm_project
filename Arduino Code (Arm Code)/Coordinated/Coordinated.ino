@@ -136,7 +136,7 @@ void drawCircle(double x, double y) {
   elevatorRun();
   goTo(CIRCLE_RADIUS + x, y);
   for (int i = 0; i < PRECISION; i++) {
-    goTo(CIRCLE_RADIUS * cos(9 * PI * / 4 * i / PRECISION) + x, CIRCLE_RADIUS * sin(9 * PI * / 4 * i / PRECISION) + y);
+    goTo(CIRCLE_RADIUS * cos(9 * PI / 4 * i / PRECISION) + x, CIRCLE_RADIUS * sin(9 * PI / 4 * i / PRECISION) + y);
   }
   elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
   elevatorRun();
@@ -150,7 +150,7 @@ void drawCircleSimple(double x, double y) {
   elevator.moveTo(ELEVATOR_DOWN); //move up to avoid writing on board
   elevatorRun();
   for (int i = 0; i < 6; i++) {
-    goTo(CIRCLE_RADIUS * cos(5 * PI * / 2 * i / 5) + x, CIRCLE_RADIUS * sin(5 * PI * / 2 * i / 5) + y);
+    goTo(CIRCLE_RADIUS * cos(5 * PI / 2 * i / 5) + x, CIRCLE_RADIUS * sin(5 * PI / 2 * i / 5) + y);
   }
   elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
   elevatorRun();
