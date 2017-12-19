@@ -15,7 +15,7 @@
 #define ELEVATOR_ACCELERATION 1000
 #define ELEVATOR_MAX_SPEED 3000
 #define JOINT_2_GEAR_REDUCTION 1.636
-#define CIRCLE_RADIUS .5
+#define CIRCLE_RADIUS 1
 #define ELEVATOR_UP 1000
 #define ELEVATOR_DOWN -50 //to account for tilted surface and the fact that the nema 23 doesn't go completely down when you press the switch
 #define PRECISION 50 //higher precision = lower speed
@@ -124,18 +124,48 @@ void drawX(double x, double y) {
   Serial.println("Finished");
 }
 
-//draws circle at (x,y) with radius .5 in
+//Draws an X with four goTo() commands instead of 100
+void drawXSimple(double x, double y) {
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
+  goTo(x - HALF_X_WIDTH, y - HALF_X_WIDTH); // move to bottom left of x
+  elevator.moveTo(ELEVATOR_DOWN); // move down to draw
+  elevatorRun();
+  goTo((x - HALF_X_WIDTH) + 1, (y - HALF_X_WIDTH) + 1);
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
+  goTo(x - HALF_X_WIDTH, y + HALF_X_WIDTH); // move to top left of x
+  elevator.moveTo(ELEVATOR_DOWN); // move down to draw
+  elevatorRun();
+  goTo((x - HALF_X_WIDTH) + 1, (y + HALF_X_WIDTH) - 1);
+}
 
+//draws circle at (x,y) with radius .5 in
 void drawCircle(double x, double y) {
   elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
   elevatorRun();
+  elevator.moveTo(ELEVATOR_DOWN); //move up to avoid writing on board
+  elevatorRun();
+  goTo(CIRCLE_RADIUS + x, y);
   for (int i = 0; i < PRECISION; i++) {
-    if (i == 0) {
-      elevator.moveTo(ELEVATOR_DOWN); // move down to draw
-      elevatorRun();
-    }
-    goTo(CIRCLE_RADIUS * cos(9 * PI / 4 * i / PRECISION) + x, CIRCLE_RADIUS * sin(9 * PI / 4 * i / PRECISION) + y);
+    goTo(CIRCLE_RADIUS * cos(9 * PI * / 4 * i / PRECISION) + x, CIRCLE_RADIUS * sin(9 * PI * / 4 * i / PRECISION) + y);
   }
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
+}
+
+//draws "circle" composed of five points instead of 50
+void drawCircleSimple(double x, double y) {
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
+  goTo(CIRCLE_RADIUS + x, y);
+  elevator.moveTo(ELEVATOR_DOWN); //move up to avoid writing on board
+  elevatorRun();
+  for (int i = 0; i < 6; i++) {
+    goTo(CIRCLE_RADIUS * cos(5 * PI * / 2 * i / 5) + x, CIRCLE_RADIUS * sin(5 * PI * / 2 * i / 5) + y);
+  }
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
 }
 
 void goTo(double x, double y) {
