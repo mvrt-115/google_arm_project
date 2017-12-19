@@ -1,8 +1,8 @@
 //elevator starts out with t-shaped piece resting on 3/32 diameter rod on hole above tape
 //arm starts out folded against right side of the elevator
 
-#include <AccelStepper.h>;
-#include <Servo.h>;
+#include <AccelStepper.h>
+#include <Servo.h>
 
 #define NUM_ROWS 3
 #define NUM_COLUMNS 3
@@ -30,6 +30,7 @@ AccelStepper elevator(1, 69, 68); //1, stp, dir
 
 const double a = 6.44; // length of joint 1(closer to base) in inches
 const double b = 6.54; // length of joint 2(farther from base) in inches
+
 double coords[18] = { // coordinate points in sets of (x,y) format
   -5, 4.75, // position A1
   -1, 4, // position A2
@@ -46,6 +47,8 @@ boolean xTurn = true; // Used to track turns
 
 void setup() {
   Serial.begin(BAUD_RATE);
+  pinMode(13,OUTPUT);
+  digitalWrite(13,LOW);
   joint1.setAcceleration(JOINT_1_ACCELERATION);
   joint2.setAcceleration(JOINT_2_ACCELERATION);
   elevator.setAcceleration(ELEVATOR_ACCELERATION);
@@ -76,7 +79,9 @@ void loop() {
 void serialEvent() {
   if (Serial.available()) {
     int inputInt = Serial.read() - '0';
-    Serial.println("recieved:" + inputInt);
+    Serial.println("recieved:");
+    Serial.println(coords[inputInt*2-2]);
+    Serial.println(coords[inputInt*2-1]);
     if (inputInt == 0)
       xTurn = true;
     else {
@@ -101,10 +106,12 @@ void drawX(double x, double y) {
   elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
   elevatorRun();
   goTo(x - HALF_X_WIDTH, y - HALF_X_WIDTH); // move to bottom left of x
+  //Serial.println("Test 1");
   elevator.moveTo(ELEVATOR_DOWN); // move down to draw
   elevatorRun();
   for (double i = 0.00; i < PRECISION; i++) {
     goTo((x - HALF_X_WIDTH) + i / PRECISION, (y - HALF_X_WIDTH) + i / PRECISION);
+    //Serial.println(i);
   }
   elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
   elevatorRun();
@@ -114,6 +121,7 @@ void drawX(double x, double y) {
   for (double i = 0.00; i < PRECISION; i++) {
     goTo((x - HALF_X_WIDTH) + i / PRECISION, (y + HALF_X_WIDTH) - i / PRECISION);
   }
+  Serial.println("Finished");
 }
 
 //draws circle at (x,y) with radius .5 in
