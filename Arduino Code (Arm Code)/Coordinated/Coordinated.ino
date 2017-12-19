@@ -4,6 +4,8 @@
 #include <AccelStepper.h>;
 #include <Servo.h>;
 
+#define NUM_ROWS 3
+#define NUM_COLUMNS 3
 #define BAUD_RATE 115200
 #define ELEVATOR_TOLERANCE 200
 #define ARM_STEPS 6400 //steps per rotation for joint 1 and joint 2 stepper motors
@@ -29,6 +31,18 @@ AccelStepper elevator(1, 69, 68); //1, stp, dir
 const double a = 6.44; // length of joint 1(closer to base) in inches
 const double b = 6.54; // length of joint 2(farther from base) in inches
 
+double coords[18] = { // coordinate points in sets of (x,y) format
+  0.0, 0.0, // position A1
+  0.0, 0.0, // position A2
+  0.0, 0.0, // position A3
+  0.0, 0.0, // position B1
+  0.0, 0.0, // position B2
+  0.0, 0.0, // position B3
+  0.0, 0.0, // position C1
+  0.0, 0.0, // position C2
+  0.0, 0.0  // position C3
+};
+
 void setup() {
   Serial.begin(BAUD_RATE);
   joint1.setAcceleration(JOINT_1_ACCELERATION);
@@ -36,35 +50,6 @@ void setup() {
   elevator.setAcceleration(ELEVATOR_ACCELERATION);
   elevator.setMaxSpeed(ELEVATOR_MAX_SPEED);
   offset();
-
-  //row1
-  drawXSimple(-5, 4.75);
-  drawXSimple(-1, 4);
-  drawXSimple(3, 6);
-
-  //row2
-  drawXSimple(-5, 6.75);
-  drawXSimple(-1, 6);
-  drawXSimple(3, 8);
-
-  //row3
-  drawXSimple(-5, 8.75);
-  drawXSimple(-1, 8);
-  drawXSimple(3, 10);
-
-  drawCircleSimple(-5, 4.75);
-  drawCircleSimple(-1, 4);
-  drawCircleSimple(3, 6);
-
-  //row2
-  drawCircleSimple(-5, 6.75);
-  drawCircleSimple(-1, 6);
-  drawCircleSimple(3, 8);
-
-  //row3
-  drawCircleSimple(-5, 8.75);
-  drawCircleSimple(-1, 8);
-  drawCircleSimple(3, 10);
 }
 
 void offset() {
@@ -87,6 +72,21 @@ void loop() {
 void elevatorRun() {
   while (abs(elevator.distanceToGo()) > 0) {
     elevator.run();
+  }
+}
+
+//Generates a coordinate lookup table based off of two corners of the table.
+//The coordinates fed in must be the positions of A1 and C3, in that order.
+boolean generateTable(double x1, double y1, double x2, double y2){
+  double deltaX = (x2-x1)/3.0;
+  double deltaY = (y2-y1)/3.0;
+  for (int i = 0; i < NUM_ROWS; i++){//Rows A, B, C
+    for (int j = 0; j < NUM_COLUMNS; j++){//Columns 1, 2, 3
+      coords[6*i+2*j] = x1 + deltaX*(double)(i);
+      coords[6*i+2*j+1] = y1 + deltaY*(double)(j);
+      Serial.println(coords[6*i+2*j]);
+      Serial.println(coords[6*i+2*j+1]);
+    }
   }
 }
 
