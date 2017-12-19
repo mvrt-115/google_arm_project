@@ -4,6 +4,8 @@
 #include <AccelStepper.h>
 #include <Servo.h>
 
+#define NUM_ROWS 3
+#define NUM_COLUMNS 3
 #define BAUD_RATE 115200
 #define ELEVATOR_TOLERANCE 200
 #define ARM_STEPS 6400 //steps per rotation for joint 1 and joint 2 stepper motors
@@ -29,7 +31,7 @@ AccelStepper elevator(1, 69, 68); //1, stp, dir
 const double a = 6.44; // length of joint 1(closer to base) in inches
 const double b = 6.54; // length of joint 2(farther from base) in inches
 
-const double coords[18] = { // coordinate points in sets of (x,y) format
+double coords[18] = { // coordinate points in sets of (x,y) format
   -5, 4.75, // position A1
   -1, 4, // position A2
   3, 6, // position A3
@@ -150,6 +152,19 @@ void goTo(double x, double y) {
     joint1.run();
     joint2.run();
     elevator.run();
+  }
+}
+
+//Generates a coordinate lookup table based off of two corners of the table.
+//The coordinates fed in must be the positions of A1 and C3, in that order.
+boolean generateTable(double x1, double y1, double x2, double y2){
+  deltaX = (x2-x1)/3.0;
+  deltaY = (y2-y1)/3.0;;
+  for (int i = 0, i < NUM_ROWS, i++){//Rows A, B, C
+    for (int j = 0, j < NUM_COLUMNS, j++){//Columns 1, 2, 3
+      coords[6*i+2*j+2] = x1 + deltaX*(double)(i);
+      coords[6*i+2*j+3] = y1 + deltaY*(double)(j);
+    }
   }
 }
 
