@@ -13,7 +13,7 @@
 #define ELEVATOR_ACCELERATION 1000
 #define ELEVATOR_MAX_SPEED 3000
 #define JOINT_2_GEAR_REDUCTION 1.636
-#define CIRCLE_RADIUS .5
+#define CIRCLE_RADIUS 1
 #define ELEVATOR_UP 1000
 #define ELEVATOR_DOWN -50 //to account for tilted surface and the fact that the nema 23 doesn't go completely down when you press the switch
 #define PRECISION 50 //higher precision = lower speed
