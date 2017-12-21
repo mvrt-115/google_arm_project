@@ -54,4 +54,4 @@ This document outlines how the RPI and Arduino talk with each other to carry out
 ### Start/Finish
 - This set of responses is used when a Command is being executed.
 - When the Arduino begins the Command, the reply "Start" is sent to the RPI.
-- When the Arduino begins the Command, the reply "Finish" is sent to the RPI.
+- When the Arduino finishes the Command, the reply "Finish" is sent to the RPI.
