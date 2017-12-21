@@ -1,9 +1,8 @@
 # Tic Tac Toe class object with arm interactions
 import random
 import serial
-from gtts import gTTS
 
-class Arm: # Uncomment stuff when arm is actually connected
+class Arm: # Uncomment serial stuff when arm is actually connected
     def __init__(self, port):
         # try:
         #     self.ser = serial.Serial(port, 115200) # Open serial line
@@ -15,9 +14,8 @@ class Arm: # Uncomment stuff when arm is actually connected
         print('Starting Arm')
     
     # Communication with Arduino
-    # decode('utf-8') converts bytes into string
-    # read_until('$') $ will be used as dividers between messages
-    # Gautham knows the most about the communication part
+    # decode('utf-8') : converts bytes into string
+    # read_until('$') $ : will be used as dividers between messages
 
     def isBusy(self):
         # Checkes if the Arduino is busy.
@@ -30,6 +28,7 @@ class Arm: # Uncomment stuff when arm is actually connected
         # Sends a signal to the arm to draw the input letter at the input position.
         # if self.isBusy() != True:
             # self.ser.write(b('P'+str(letter)+str(move)+'$'))
+        print('Sent over serial: P'+str(letter)+str(move)+'$') # Testing
             # if self.ser.read_until('$').decode('utf-8') == 'Invalid':
                 # print('Falied: Invalid request')
                 # return False
@@ -38,11 +37,40 @@ class Arm: # Uncomment stuff when arm is actually connected
                 # return True
         # print('Falied: Arduino is Busy')
         # return False
-        # Wait for finished signal
+        # while self.ser.read_until('$').decode('utf-8') != 'Finish': # Wait for finished signal
         return True # Testing
 
     def drawWinLine(self, winNum):
+        # Sends the two points for drawing the winning line.
+        fNum = 0
+        sNum = 0
+        if winNum == 1:
+            fNum = 7
+            sNum = 9
+        elif winNum == 2:
+            fNum = 4
+            sNum = 6
+        elif winNum == 3:
+            fNum = 1
+            sNum = 3
+        elif winNum == 4:
+            fNum = 7
+            sNum = 1
+        elif winNum == 5:
+            fNum = 8
+            sNum = 2
+        elif winNum == 6:
+            fNum = 9
+            sNum = 3
+        elif winNum == 7:
+            fNum = 7
+            sNum = 3
+        elif winNum == 8:
+            fNum = 9
+            sNum = 1
         print(str(winNum))
+        # self.ser.write(b('W'+str(fNum)+str(sNum)+'$'))
+        print('Sent over serial: W'+str(fNum)+str(sNum)+'$') # Testing
 
     def close(self):
         # Closes the serial port.
@@ -109,42 +137,49 @@ class Board: # Should be complete
 class TTTGame:
     def __init__(self):
         self.board = Board()
-        self.playerLetter = 1 # 1 = 'X', 2 = 'O'
+        self.playerLetter = 1 # 1 = 'X', 2 = 'O', default is 'X'
+        self.computerLetter = 2
         self.arm = Arm('/dev/ttyACM0')
 
-    def makeMove(self, move): # Not done yet
-        # Given a board and the computer's letter, determine where to move and return that move.
-        if self.playerLetter == 1:
-            computerLetter = 2
-        else:
-            computerLetter = 1
+    def makeMove(self, move):
         # Makes a move on the board with the player letter at input position.
-        # Calculates the next move and places it at the position with the other letter.
-        # Checks for winners. If so, sends the signal to draws the win line.
         if self.board.makeMove(self.playerLetter, move):
             print('Ok: ' + str(self.playerLetter) + ' can be placed at ' + str(move))
-            # self.arm.movePos(self.playerLetter,move)
+            self.arm.movePos(self.playerLetter,move)
+            # Checks for winners. If so, sends the signal to draws the win line.
             if self.board.isWinner(self.playerLetter) > 0:
                 self.arm.drawWinLine(self.board.isWinner(self.playerLetter))
-                return self.playerLetter # Player Won
+                return str(self.playerLetter) + 'W' # Player Won
             elif self.board.isBoardFull():
-                return 0 # Tie
+                return 'Tie' # Tie
+            # Calculates the next move and places it at the position with the other letter.
             print('Making Comp Move') # Testing
-            self.board.makeMove(computerLetter, self.getComputerMove(computerLetter))# Calculate next move and place
-            # self.arm.movePos(computerLetter,move)
-            if self.board.isWinner(computerLetter) > 0:
-                self.arm.drawWinLine(self.board.isWinner(computerLetter))
-                return computerLetter # Computer Won
+            compMove = self.getComputerMove()
+            self.board.makeMove(self.computerLetter, compMove) # Calculate next move and place
+            self.arm.movePos(self.computerLetter, compMove)
+            if self.board.isWinner(self.computerLetter) > 0:
+                self.arm.drawWinLine(self.board.isWinner(self.computerLetter))
+                return str(self.computerLetter) + 'W' # Computer Won
             elif self.board.isBoardFull():
-                return 0 # Tie
+                return 'Tie' # Tie
         else:
             print('Error: ' + str(self.playerLetter) + ' cannot be placed at ' + str(move))
-            return -1
+            return 'Failure'
+        return 'Good'
 
     def setPLetter(self, le):
         self.playerLetter = le
-        # If player letter it 'O':
-            # Make first move with computer as X
+        if self.playerLetter == 1:
+            self.computerLetter = 2
+        else:
+            self.computerLetter = 1
+        if self.playerLetter == 2:
+            # Make first move with computer as 'X'
+            print('Making Comp Move') # Testing
+            compMove = self.getComputerMove()
+            self.board.makeMove(self.computerLetter, compMove) # Calculate next move and place
+            self.arm.movePos(self.computerLetter, compMove)
+    
     def getPLetter(self):
         return self.playerLetter
 
@@ -177,12 +212,12 @@ class TTTGame:
                 winningMoves += 1
         return winningMoves >= 2
 
-    def getComputerMove(self, computerLetter):
+    def getComputerMove(self):
         # Determines the optimal move for the computer and tells arm to do so.
 
         # First, check if we can win in the next move.
         for i in range(1, 10):
-            if self.board.board[i] == 0 and self.testWinMove(self.board, computerLetter, i):
+            if self.board.board[i] == 0 and self.testWinMove(self.board, self.computerLetter, i):
                 return i
 
         # Check if the player could win on his next move, and block them.
@@ -192,7 +227,7 @@ class TTTGame:
 
         # Check for computer fork opportunities.
         for i in range(1, 10):
-            if self.board.board[i] == 0 and self.testForkMove(computerLetter, i):
+            if self.board.board[i] == 0 and self.testForkMove(self.computerLetter, i):
                 return i
         
         # Check player fork opportunities, incl. two forks, and block them.
@@ -226,12 +261,14 @@ class TTTGame:
 #Testing:
 print('Testing:')
 g = TTTGame()
-print(str(g.makeMove(5)))
-g.board.draw()
-print(str(g.makeMove(1)))
-g.board.draw()
-print(str(g.makeMove(9)))
-g.board.draw()
-print(str(g.makeMove(9)))
+while True:
+    letter = input('What character: X(1) or O(2) ')
+    if letter in ('1', '2'):
+        break
+g.setPLetter(int(letter))
+while g.board.isWinner(1) or g.board.isWinner(2) == 0:
+    g.board.draw()
+    playerMove = input('Player move: ')
+    print(g.makeMove(int(playerMove)))
 g.board.draw()
 g.quit()
