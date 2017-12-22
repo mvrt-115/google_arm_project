@@ -1,0 +1,83 @@
+{
+    "manifest":{
+      "displayName":"TTT game",
+      "invocationName":"TTT game",
+      "category":"PRODUCTIVITY"
+    },
+    "actions":[
+      {
+        "name":"actions.devices",
+        "config":{
+          "@type":"type.googleapis.com/google.actions.v2.devices.DeviceControl",
+          "commands":[
+            {
+              "intent":{
+                "name":"StartGame",
+                "parameters":[
+                  {
+                    "name":"game",
+                    "type":"SchemaOrg_Text"
+                  }
+                ],
+                "trigger":{
+                  "queryPatterns":[
+                    "Start a new Tic Tac Toe $SchemaOrg_Text:game"
+                  ]
+                }
+              },
+              "directResponseFulfillment":{
+                "ttsPattern":"Ok. Starting a new game. What letter would you like to be. X or O."
+              },
+              "requiredTraits":[
+                "StartGame"
+              ]
+            },
+            {
+              "intent":{
+                "name":"SetLetter",
+                "parameters":[
+                  {
+                    "name":"letter",
+                    "type":"SchemaOrg_Text"
+                  }
+                ],
+                "trigger":{
+                  "queryPatterns":[
+                    "Set my letter to $SchemaOrg_Text:letter"
+                  ]
+                }
+              },
+              "directResponseFulfillment":{
+                "ttsPattern":"Ok. setting letter to $letter . X will go first."
+              },
+              "requiredTraits":[
+                "SetLetter"
+              ]
+            },
+            {
+              "intent":{
+                "name":"ChoosePos",
+                "parameters":[
+                  {
+                    "name":"pos",
+                    "type":"SchemaOrg_Number"
+                  }
+                ],
+                "trigger":{
+                  "queryPatterns":[
+                    "Move to (position)? $SchemaOrg_Number:pos"
+                  ]
+                }
+              },
+              "directResponseFulfillment":{
+                "ttsPattern":"Placing piece at position $pos ."
+              },
+              "requiredTraits":[
+                "ChoosePos"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
