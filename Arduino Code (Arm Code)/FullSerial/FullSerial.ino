@@ -25,6 +25,7 @@
 #define ELEVATOR_OFFSET -16000 //in steps
 
 boolean commandReady = false; //boolean to determine if start-up was successful.
+boolean busy = true;
 
 AccelStepper joint1(1, 67, 66); // 1, stp, dir
 AccelStepper joint2(1, 65, 64); //1, stp, dir
@@ -56,6 +57,7 @@ void setup() {
   digitalWrite(13,LOW);
   commandReady = true;
   Serial.println("Ready");
+  busy = false;
 }
 
 boolean newGame(){
@@ -86,52 +88,60 @@ void loop() {
 }
 
 void serialEvent() {
-  String incomingCommand = String();
-  char nextChar = '$';
-  while (Serial.available()) {
-    nextChar = Serial.read();
-    Serial.println(nextChar);
-    incomingCommand.concat(nextChar);
-    Serial.println(incomingCommand);
-  }
-  if(incomingCommand.charAt(0) == 'N'){
-    newGame();
-  }
-  else if(incomingCommand.charAt(0) == 'P'){
-    int toMark = incomingCommand.charAt(4) - '0';
-    if(toMark < 1 || toMark > 9){
-      Serial.println("Invalid");
+  if(!busy){
+    busy = true;
+    String incomingCommand = String();
+    char nextChar = '$';
+    while (Serial.available()) {
+      nextChar = Serial.read();
+      Serial.println(nextChar);
+      incomingCommand.concat(nextChar);
+      Serial.println(incomingCommand);
     }
-    if(incomingCommand.charAt(2) == 'X'){
-      drawX(coords[toMark*2-2], coords[toMark*2-1]);
+    if(incomingCommand.charAt(0) == 'N'){
+      newGame();
     }
-    else if(incomingCommand.charAt(2) == 'O'){
-      drawCircle(coords[toMark*2-2], coords[toMark*2-1]);
+    else if(incomingCommand.charAt(0) == 'P'){
+      int toMark = incomingCommand.charAt(4) - '0';
+      if(toMark < 1 || toMark > 9){
+        Serial.println("Invalid");
+      }
+      if(incomingCommand.charAt(2) == 'X'){
+        drawX(coords[toMark*2-2], coords[toMark*2-1]);
+      }
+      else if(incomingCommand.charAt(2) == 'O'){
+        drawCircle(coords[toMark*2-2], coords[toMark*2-1]);
+      }
+      else{
+        Serial.println("Invalid");
+      }
     }
-    else{
-      Serial.println("Invalid");
+    else if(incomingCommand.charAt(0) == 'C'){
+      positionsStr = incomingCommand.substring(4);
+      firstPosition = positionsStr.substring(0,positionsStr.indexOf(' '));
+      secondPosition = positionsStr.substring(positionsStr.indexOf(' ') + 1);
+      double x = firstPosition.toDouble();
+      double y = secondPosition.toDouble();
+      if(incomingCommand.charAt(2) == 'X'){
+        drawX(x, y);
+      }
+      else if(incomingCommand.charAt(2) == 'O'){
+        drawCircle(x, y);
+      }
+      else{
+        Serial.println("Invalid");
+      }
     }
-  }
-  else if(incomingCommand.charAt(0) == 'C'){
-    positionsStr = incomingCommand.substring(4);
-    firstPosition = positionsStr.substring(0,positionsStr.indexOf(' '));
-    secondPosition = positionsStr.substring(positionsStr.indexOf(' ') + 1);
-    double x = firstPosition.toDouble();
-    double y = secondPosition.toDouble();
-    if(incomingCommand.charAt(2) == 'X'){
-      drawX(x, y);
-    }
-    else if(incomingCommand.charAt(2) == 'O'){
-      drawCircle(x, y);
-    }
-    else{
-      Serial.println("Invalid");
-  }
-  else if(incomingCommand.charAt(0) == 'W'){
+    else if(incomingCommand.charAt(0) == 'W'){
 
+    }
+    else{
+      Serial.println("Invalid");
+    }
+    busy = false;
   }
   else{
-    Serial.println("Invalid");
+    Stream.flush();
   }
 }
 
