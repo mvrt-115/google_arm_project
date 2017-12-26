@@ -2,6 +2,7 @@
 //arm starts out folded against right side of the elevator
 
 #include <AccelStepper.h>
+#include <MultiStepper.h>
 #include <Servo.h>
 
 #define NUM_ROWS 3
@@ -55,8 +56,6 @@ void setup() {
   }
   pinMode(13,OUTPUT);
   digitalWrite(13,LOW);
-  commandReady = true;
-  Serial.println("Ready");
   busy = false;
 }
 
@@ -66,6 +65,8 @@ boolean newGame(){
   elevator.setAcceleration(ELEVATOR_ACCELERATION);
   elevator.setMaxSpeed(ELEVATOR_MAX_SPEED);
   offset();
+  commandReady = true;
+  Serial.println("Ready");
 }
 
 void offset() {
@@ -98,42 +99,64 @@ void serialEvent() {
       incomingCommand.concat(nextChar);
       Serial.println(incomingCommand);
     }
-    if(incomingCommand.charAt(0) == 'N'){
+    char firstChar = incomingCommand.charAt(0);
+    if(firstChar == 'N'){
+      Serial.println("Accepted");
+      Serial.println("Start");
       newGame();
+      Serial.println("Finish");
     }
-    else if(incomingCommand.charAt(0) == 'P'){
+    else if(commandReady && firstChar == 'P'){
       int toMark = incomingCommand.charAt(4) - '0';
       if(toMark < 1 || toMark > 9){
         Serial.println("Invalid");
       }
       if(incomingCommand.charAt(2) == 'X'){
+        Serial.println("Accepted");
+        Serial.println("Start");
         drawX(coords[toMark*2-2], coords[toMark*2-1]);
+        Serial.println("Finish");
       }
       else if(incomingCommand.charAt(2) == 'O'){
+        Serial.println("Accepted");
+        Serial.println("Start");
         drawCircle(coords[toMark*2-2], coords[toMark*2-1]);
+        Serial.println("Finish");
       }
       else{
         Serial.println("Invalid");
       }
     }
-    else if(incomingCommand.charAt(0) == 'C'){
+    else if(commandReady && firstChar == 'C'){
       positionsStr = incomingCommand.substring(4);
       firstPosition = positionsStr.substring(0,positionsStr.indexOf(' '));
       secondPosition = positionsStr.substring(positionsStr.indexOf(' ') + 1);
       double x = firstPosition.toDouble();
       double y = secondPosition.toDouble();
       if(incomingCommand.charAt(2) == 'X'){
+        Serial.println("Accepted");
+        Serial.println("Start");
         drawX(x, y);
+        Serial.println("Finish");
+
       }
       else if(incomingCommand.charAt(2) == 'O'){
+        Serial.println("Accepted");
+        Serial.println("Start");
         drawCircle(x, y);
+        Serial.println("Finish");
       }
       else{
         Serial.println("Invalid");
       }
     }
-    else if(incomingCommand.charAt(0) == 'W'){
-
+    else if(commandReady && firstChar == 'W'){
+      int firstPosition = incomingCommand.substring(2,3).toInt();
+      int secondPosition = incomingCommand.substring(4,5).toInt();
+      Serial.println("Accepted");
+      Serial.println("Start");
+      winningLine(coords[firstPosition*2-2], coords[firstPosition*2-1], coords[secondPosition*2-2], coords[secondPosition*2-1]);
+      Serial.println("Finish");
     }
     else{
       Serial.println("Invalid");
@@ -149,6 +172,17 @@ void elevatorRun() {
   while (elevator.distanceToGo() > 0) {
     elevator.run();
   }
+}
+
+void winningLine(double x1, double y1, double x2, double y2){
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
+  goTo(x1, y1);
+  elevator.moveTo(ELEVATOR_DOWN); // move down to draw
+  elevatorRun();
+  goTo(x2, y2);
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
 }
 
 //draws an X at a given (x,y) coordinate, where each line in the X has a length of 1 inch
@@ -172,7 +206,6 @@ void drawX(double x, double y) {
   for (double i = 0.00; i < PRECISION; i++) {
     goTo((x - HALF_X_WIDTH) + i / PRECISION, (y + HALF_X_WIDTH) - i / PRECISION);
   }
-  Serial.println("Finished");
 }
 
 //Draws an X with four goTo() commands instead of 100
