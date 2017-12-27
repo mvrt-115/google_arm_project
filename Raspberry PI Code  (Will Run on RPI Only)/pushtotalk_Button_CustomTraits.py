@@ -411,7 +411,6 @@ def main(api_endpoint, credentials, device_id, verbose,
         elif moveResult == '2W':
             os.system('omxplayer -o local "TTS Audio"/oWon.wav')
         os.system('omxplayer -o local "TTS Audio"/thank.wav')
-        
 
         
     GPIO.setmode(GPIO.BCM)
