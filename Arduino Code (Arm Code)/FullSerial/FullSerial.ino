@@ -111,13 +111,13 @@ void serialEvent() {
       if(toMark < 1 || toMark > 9){
         Serial.println("Invalid");
       }
-      if(incomingCommand.charAt(2) == 'X'){
+      if(incomingCommand.charAt(2) == '1'){
         Serial.println("Accepted");
         Serial.println("Start");
         drawX(coords[toMark*2-2], coords[toMark*2-1]);
         Serial.println("Finish");
       }
-      else if(incomingCommand.charAt(2) == 'O'){
+      else if(incomingCommand.charAt(2) == '2'){
         Serial.println("Accepted");
         Serial.println("Start");
         drawCircle(coords[toMark*2-2], coords[toMark*2-1]);
@@ -133,14 +133,14 @@ void serialEvent() {
       String secondPosition = positionsStr.substring(positionsStr.indexOf(' ') + 1);
       double x = firstPosition.toDouble();
       double y = secondPosition.toDouble();
-      if(incomingCommand.charAt(2) == 'X'){
+      if(incomingCommand.charAt(2) == '1'){
         Serial.println("Accepted");
         Serial.println("Start");
         drawX(x, y);
         Serial.println("Finish");
 
       }
-      else if(incomingCommand.charAt(2) == 'O'){
+      else if(incomingCommand.charAt(2) == '2'){
         Serial.println("Accepted");
         Serial.println("Start");
         drawCircle(x, y);
