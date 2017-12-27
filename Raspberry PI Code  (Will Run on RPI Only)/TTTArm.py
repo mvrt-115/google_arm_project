@@ -24,11 +24,12 @@ class Arm: # Uncomment serial stuff when arm is actually connected
             # return True
         return False
 
-    def movePos(self, letter, move): # Not done yet
+    def movePos(self, letter, move): # Comment out testing when connected to arm
         # Sends a signal to the arm to draw the input letter at the input position.
         # if self.isBusy() != True:
-            # self.ser.write(b('P'+str(letter)+str(move)+'$'))
-        print('Sent over serial: P'+str(letter)+str(move)+'$') # Testing
+            # self.ser.write(b('P '+str(letter)+ ' ' + str(move)+'$'))
+            # print('Sent over serial: P '+str(letter) + ' ' +str(move)+'$') # Logging
+        print('Sent over serial: P '+str(letter) + ' ' +str(move)+'$') # Testing
             # if self.ser.read_until('$').decode('utf-8') == 'Invalid':
                 # print('Falied: Invalid request')
                 # return False
@@ -69,8 +70,8 @@ class Arm: # Uncomment serial stuff when arm is actually connected
             fNum = 9
             sNum = 1
         print(str(winNum))
-        # self.ser.write(b('W'+str(fNum)+str(sNum)+'$'))
-        print('Sent over serial: W'+str(fNum)+str(sNum)+'$') # Testing
+        # self.ser.write(b('W ' + str(fNum) + ' ' + str(sNum) + '$'))
+        print('Sent over serial: W ' + str(fNum) + ' ' + str(sNum) + '$') # Logging
 
     def close(self):
         # Closes the serial port.
