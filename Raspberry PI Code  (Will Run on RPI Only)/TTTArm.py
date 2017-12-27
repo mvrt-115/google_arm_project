@@ -129,8 +129,8 @@ class Board: # Should be complete
         # Make a duplicate of the board list and return it the duplicate.
         dupeBoard = Board()
 
-        for i in self.board:
-            dupeBoard.board[i] = i
+        for i in range(1, 10):
+            dupeBoard.board[i] = self.board[i]
 
         return dupeBoard
 
@@ -208,7 +208,7 @@ class TTTGame:
         bCopy.board[i] = letter
         winningMoves = 0
         for j in range(1, 10):
-            if self.testWinMove(bCopy, letter, j) and bCopy[j] == 0:
+            if self.testWinMove(bCopy, letter, j) and bCopy.board[j] == 0:
                 winningMoves += 1
         return winningMoves >= 2
 
@@ -266,7 +266,7 @@ def _test():
         if letter in ('1', '2'):
             break
     g.setPLetter(int(letter))
-    while g.board.isWinner(1) or g.board.isWinner(2) == 0:
+    while not g.board.isBoardFull():
         g.board.draw()
         playerMove = input('Player move: ')
         print(g.makeMove(int(playerMove)))
