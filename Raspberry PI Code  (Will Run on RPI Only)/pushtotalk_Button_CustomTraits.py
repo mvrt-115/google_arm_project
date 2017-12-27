@@ -50,9 +50,9 @@ from google.assistant.embedded.v1alpha1 import embedded_assistant_pb2
 from google.rpc import code_pb2
 from tenacity import retry, stop_after_attempt, retry_if_exception
 from gtts import gTTS
-from .TTTArm import TTTGame
-from .TTTArm import Board
-from .TTTArm import Arm
+from TTTArm import TTTGame
+from TTTArm import Board
+from TTTArm import Arm
 
 try:
     from . import (
@@ -372,58 +372,45 @@ def main(api_endpoint, credentials, device_id, verbose,
     def startGame(game):
         logging.info('Starting new game')
         tttGame = TTTGame()
-        # Real TTS System
-        os.system('omxplayer newGame.mp3')
         # Fake TSS System (better sounding):
-        # os.system('omxplayer TTS Audio/start.wav')
-        # os.system('omxplayer TTS Audio/XorO.wav')
+        os.system('omxplayer -o local "TTS Audio"/start.wav')
+        os.system('omxplayer -o local "TTS Audio"/XorO.wav')
 
     @device_handler.command('SetLetter')
     def setLetter(letter):
         logging.info('Setting player letter to ' + str(letter))
         if 'o' in letter.lower():
             tttGame.setPLetter(2)
-        # Real TTS System
-        tts = gTTS(text=('Setting letter to ' + str(letter)),lang='en')
-        # set player letter to letter
-        tts.save('temp.mp3')
-        os.system('omxplayer temp.mp3')
-        os.system('omxplayer first.mp3')
         # Fake TSS System (better sounding):
-        # if tttGame.getPLetter() == 1:
-        #     os.system('omxplayer TTS Audio/letterX.wav')
-        # elif tttGame.getPletter() == 2:
-        #     os.system('omxplayer TTS Audio/letterO.wav')
-        # os.system('omxplayer TTS Audio/xFirst.wav')
+        if tttGame.getPLetter() == 1:
+            os.system('omxplayer -o local "TTS Audio"/letterX.wav')
+        elif tttGame.getPletter() == 2:
+            os.system('omxplayer -o local "TTS Audio"/letterO.wav')
+        os.system('omxplayer -o local "TTS Audio"/xFirst.wav')
 
     @device_handler.command('ChoosePos')
     def choosePos(pos):
         logging.info('Placing piece at postition ' + str(pos))
-        # Real TTS System
-        tts = gTTS(text=('Placing piece at postition ' + str(pos)),lang='en')
-        tttGame.makeMove(int(pos))
-        tts.save('tempP.mp3')
-        os.system('omxplayer tempP.mp3')
         # Fake TSS System (better sounding):
-        # if int(pos) < 1 and int(pos) > 9:
-        # os.system('omxplayer TTS Audio/within.wav')
-        # os.system('omxplayer TTS Audio/again.wav')
-        # moveResult = tttGame.makeMove(int(pos))
-        # if moveResult == 'Failure': # If spot is closed:
-        #     os.system('omxplayer TTS Audio/occupied.wav')
-        #     os.system('omxplayer TTS Audio/again.wav')
-        #     return
-        # elif moveResult == 'Good':
-        #     os.system('omxplayer TTS Audio/p' + pos + '.wav')
-        #     return
-        # elif moveResult == 'Tie':
-        #     os.system('omxplayer TTS Audio/tie.wav')
-        # elif moveResult == '1W':
-        #     os.system('omxplayer TTS Audio/xWon.wav')
-        # elif moveResult == '2W':
-        #     os.system('omxplayer TTS Audio/oWon.wav')
-        # os.system('omxplayer TTS Audio/thank.wav')
-        
+        if int(pos) < 1 or int(pos) > 9:
+            os.system('omxplayer -o local "TTS Audio"/within.wav')
+            os.system('omxplayer -o local "TTS Audio"/again.wav')
+            return
+        moveResult = tttGame.makeMove(int(pos))
+        if moveResult == 'Failure': # If spot is closed:
+            os.system('omxplayer -o local "TTS Audio"/occupied.wav')
+            os.system('omxplayer -o local "TTS Audio"/again.wav')
+            return
+        elif moveResult == 'Good':
+            os.system('omxplayer -o local "TTS Audio"/p' + pos + '.wav')
+            return
+        elif moveResult == 'Tie':
+            os.system('omxplayer -o local "TTS Audio"/tie.wav')
+        elif moveResult == '1W':
+            os.system('omxplayer -o local "TTS Audio"/xWon.wav')
+        elif moveResult == '2W':
+            os.system('omxplayer -o local "TTS Audio"/oWon.wav')
+        os.system('omxplayer -o local "TTS Audio"/thank.wav')
 
         
     GPIO.setmode(GPIO.BCM)

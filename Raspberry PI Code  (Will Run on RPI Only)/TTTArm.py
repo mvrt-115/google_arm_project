@@ -257,18 +257,21 @@ class TTTGame:
         # self.arm.close() # Close Serial Port
         exit()
 
-
-#Testing:
-print('Testing:')
-g = TTTGame()
-while True:
-    letter = input('What character: X(1) or O(2) ')
-    if letter in ('1', '2'):
-        break
-g.setPLetter(int(letter))
-while g.board.isWinner(1) or g.board.isWinner(2) == 0:
+def _test():
+    #Testing:
+    print('Testing:')
+    g = TTTGame()
+    while True:
+        letter = input('What character: X(1) or O(2) ')
+        if letter in ('1', '2'):
+            break
+    g.setPLetter(int(letter))
+    while g.board.isWinner(1) or g.board.isWinner(2) == 0:
+        g.board.draw()
+        playerMove = input('Player move: ')
+        print(g.makeMove(int(playerMove)))
     g.board.draw()
-    playerMove = input('Player move: ')
-    print(g.makeMove(int(playerMove)))
-g.board.draw()
-g.quit()
+    g.quit()
+
+if __name__ == '__main__':
+    _test()
