@@ -4,41 +4,40 @@ import serial
 
 class Arm: # Uncomment serial stuff when arm is actually connected
     def __init__(self, port):
-        # try:
-        #     self.ser = serial.Serial(port, 115200) # Open serial line
-        #     while self.ser.read_until('$').decode('utf-8') != 'ready':
-        #         self.ser.write(b'N$')
-        # except  serial.serialutil.SerialException:
-        #     print('Failed to open port: ' + port)
-        #     exit()
+        try:
+            self.ser = serial.Serial(port, 115200) # Open serial line
+            self.ser.write(b'N\r')
+        except  serial.serialutil.SerialException:
+            print('Failed to open port: ' + port)
+            exit()
         print('Starting Arm')
     
     # Communication with Arduino
     # decode('utf-8') : converts bytes into string
-    # read_until('$') $ : will be used as dividers between messages
+    # read_until('/r') /r : will be used as dividers between messages
 
-    def isBusy(self):
-        # Checkes if the Arduino is busy.
-        # self.ser.write(b'Busy$')
-        # if self.ser.read_until('$').decode('utf-8') == 'busy':
-            # return True
-        return False
+    #def isBusy(self):
+        #Checkes if the Arduino is busy.
+        #self.ser.write(b'Busy/r')
+        #if self.ser.read_until('/r').decode('utf-8') == 'busy':
+            #return True
+        #return False
 
     def movePos(self, letter, move): # Comment out testing when connected to arm
         # Sends a signal to the arm to draw the input letter at the input position.
         # if self.isBusy() != True:
-            # self.ser.write(b('P '+str(letter)+ ' ' + str(move)+'$'))
-            # print('Sent over serial: P '+str(letter) + ' ' +str(move)+'$') # Logging
-        print('Sent over serial: P '+str(letter) + ' ' +str(move)+'$') # Testing
-            # if self.ser.read_until('$').decode('utf-8') == 'Invalid':
-                # print('Falied: Invalid request')
-                # return False
-            # else:
-                # print('Success: ' + str(letter) + ' placed at ' + str(move))
-                # return True
+        message = ('P '+str(letter)+' '+str(move)+'/r')
+        self.ser.write(message.encode())
+        print('Sent over serial: P '+str(letter)+' '+str(move)+'/r') # Testing
+        #if self.ser.read_until('/r').decode('utf-8') == 'Invalid':
+        #    print('Falied: Invalid request')
+        #    return False
+        #else:
+        #    print('Success: ' + str(letter) + ' placed at ' + str(move))
+        #    return True
         # print('Falied: Arduino is Busy')
         # return False
-        # while self.ser.read_until('$').decode('utf-8') != 'Finish': # Wait for finished signal
+        #while self.ser.read_until('$').decode('utf-8') != 'Finish': # Wait for finished signal
         return True # Testing
 
     def drawWinLine(self, winNum):
@@ -70,8 +69,8 @@ class Arm: # Uncomment serial stuff when arm is actually connected
             fNum = 9
             sNum = 1
         print(str(winNum))
-        # self.ser.write(b('W ' + str(fNum) + ' ' + str(sNum) + '$'))
-        print('Sent over serial: W ' + str(fNum) + ' ' + str(sNum) + '$') # Logging
+        self.ser.write(b('W '+str(fNum)+' '+str(sNum)+'/r'))
+        print('Sent over serial: W '+str(fNum)+' '+str(sNum)+'/r') # Testing
 
     def close(self):
         # Closes the serial port.
