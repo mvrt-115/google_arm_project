@@ -17,8 +17,8 @@
 #define ELEVATOR_MAX_SPEED 3000
 #define JOINT_2_GEAR_REDUCTION 1.636
 #define CIRCLE_RADIUS 1
-#define ELEVATOR_UP 1000
-#define ELEVATOR_DOWN -50 //to account for tilted surface and the fact that the nema 23 doesn't go completely down when you press the switch
+#define ELEVATOR_UP 2100
+#define ELEVATOR_DOWN -30 //to account for tilted surface and the fact that the nema 23 doesn't go completely down when you press the switch
 #define PRECISION 50 //higher precision = lower speed
 #define HALF_X_WIDTH .3536
 #define JOINT_1_OFFSET -2000 //in steps
@@ -92,7 +92,7 @@ void serialEvent() {
   if(!busy){
     busy = true;
     String incomingCommand = String();
-    char nextChar = '$';
+    char nextChar = '\r';
     while (Serial.available()) {
       nextChar = Serial.read();
       Serial.println(nextChar);
@@ -101,30 +101,30 @@ void serialEvent() {
     }
     char firstChar = incomingCommand.charAt(0);
     if(firstChar == 'N'){
-      Serial.println("Accepted");
-      Serial.println("Start");
+      Serial.print("Accepted\r");
+      Serial.print("Start\r");
       newGame();
-      Serial.println("Finish");
+      Serial.print("Finish\r");
     }
     else if(commandReady && firstChar == 'P'){
       int toMark = incomingCommand.charAt(4) - '0';
       if(toMark < 1 || toMark > 9){
-        Serial.println("Invalid");
+        Serial.print("Invalid\r");
       }
       if(incomingCommand.charAt(2) == '1'){
-        Serial.println("Accepted");
-        Serial.println("Start");
+        Serial.print("Accepted\r");
+        Serial.print("Start\r");
         drawX(coords[toMark*2-2], coords[toMark*2-1]);
-        Serial.println("Finish");
+        Serial.print("Finish\r");
       }
       else if(incomingCommand.charAt(2) == '2'){
-        Serial.println("Accepted");
-        Serial.println("Start");
+        Serial.print("Accepted\r");
+        Serial.print("Start\r");
         drawCircle(coords[toMark*2-2], coords[toMark*2-1]);
-        Serial.println("Finish");
+        Serial.print("Finish\r");
       }
       else{
-        Serial.println("Invalid");
+        Serial.print("Invalid\r");
       }
     }
     else if(commandReady && firstChar == 'C'){
@@ -134,32 +134,32 @@ void serialEvent() {
       double x = firstPosition.toDouble();
       double y = secondPosition.toDouble();
       if(incomingCommand.charAt(2) == '1'){
-        Serial.println("Accepted");
-        Serial.println("Start");
+        Serial.print("Accepted\r");
+        Serial.print("Start\r");
         drawX(x, y);
-        Serial.println("Finish");
+        Serial.print("Finish\r");
 
       }
       else if(incomingCommand.charAt(2) == '2'){
-        Serial.println("Accepted");
-        Serial.println("Start");
+        Serial.print("Accepted\r");
+        Serial.print("Start\r");
         drawCircle(x, y);
-        Serial.println("Finish");
+        Serial.print("Finish\r");
       }
       else{
-        Serial.println("Invalid");
+        Serial.print("Invalid\r");
       }
     }
     else if(commandReady && firstChar == 'W'){
       int firstPosition = incomingCommand.substring(2,3).toInt();
       int secondPosition = incomingCommand.substring(4,5).toInt();
-      Serial.println("Accepted");
-      Serial.println("Start");
+      Serial.print("Accepted\r");
+      Serial.print("Start\r");
       winningLine(coords[firstPosition*2-2], coords[firstPosition*2-1], coords[secondPosition*2-2], coords[secondPosition*2-1]);
-      Serial.println("Finish");
+      Serial.print("Finish\r");
     }
     else{
-      Serial.println("Invalid");
+      Serial.print("Invalid\r");
     }
     busy = false;
   }
@@ -206,6 +206,8 @@ void drawX(double x, double y) {
   for (double i = 0.00; i < PRECISION; i++) {
     goTo((x - HALF_X_WIDTH) + i / PRECISION, (y + HALF_X_WIDTH) - i / PRECISION);
   }
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
 }
 
 //Draws an X with four goTo() commands instead of 100
@@ -222,6 +224,8 @@ void drawXSimple(double x, double y) {
   elevator.moveTo(ELEVATOR_DOWN); // move down to draw
   elevatorRun();
   goTo((x - HALF_X_WIDTH) + 1, (y + HALF_X_WIDTH) - 1);
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
 }
 
 //draws circle at (x,y) with radius .5 in
