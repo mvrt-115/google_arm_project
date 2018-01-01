@@ -20,7 +20,7 @@
 - [X] Integrate code w/ coords and Serial comms.
 - [x] Test simplified drawing cycles
 - [X] Create scalable table feature
-- [ ] Test scalable table feature
+- [X] Test scalable table feature
 - [x] Work with RPI group to standarize Serial comm syntax
 
 ## Rasberry Pi / Google Stuff
