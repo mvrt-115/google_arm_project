@@ -5,7 +5,7 @@
   - Currently basic commication works, but the busy signal does not as commands simply get tacked on to the end of current action
   - On PI side, the finished signal code does not work, so script does not wait for the arm to finish
 - [ ] Reset board when starting new games
-- [ ] Add small delay so TTS does not get cut off
+- [x] Add small delay so TTS does not get cut off
 - [ ] Arm currently moves to far down sometimes
 - [ ] Finish enclosure for electronics
 
@@ -27,7 +27,7 @@
 - [x] Get example to run
 - [x] PoC of rPi to Arduino via serial
 - [x] Trigger example with button
-- [ ] Add LED that lights up when prompting
+- [x] Add LED that lights up when prompting
 - [x] Write our own custom traits
 - [x] Figure out how to enable mutliple custom traits at once
 - [x] Integrate traits into code
