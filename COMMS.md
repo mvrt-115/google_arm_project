@@ -1,7 +1,7 @@
 # Serial Communication Protocol
 This document outlines how the RPI and Arduino talk with each other to carry out specific Tic-Tac-Toe moves.
 
-## `'\r'` Serves as a break inbetween all messages
+## `\r` Serves as a break inbetween all messages
 
 ## Commands:
 - Preset Positions
