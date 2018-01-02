@@ -370,15 +370,16 @@ def main(api_endpoint, credentials, device_id, verbose,
     tttGame = TTTGame()
     @device_handler.command('StartGame')
     def startGame(game):
+        time.sleep(1)
         logging.info('Starting new game')
-        for i in range(1, 10):
-            tttGame.board.board[i] == 0
+        tttGame = new TTTGame()
         # Fake TSS System (better sounding):
         os.system('omxplayer -o alsa "TTS Audio"/start.wav')
         os.system('omxplayer -o alsa "TTS Audio"/XorO.wav')
 
     @device_handler.command('SetLetter')
     def setLetter(letter):
+        time.sleep(1)
         logging.info('Setting player letter to ' + str(letter))
         if 'o' in letter.lower():
             tttGame.setPLetter(2)
@@ -391,6 +392,7 @@ def main(api_endpoint, credentials, device_id, verbose,
 
     @device_handler.command('ChoosePos')
     def choosePos(pos):
+        time.sleep(1)
         logging.info('Placing piece at postition ' + str(pos))
         # Fake TSS System (better sounding):
         if int(pos) < 1 or int(pos) > 9:
@@ -417,6 +419,7 @@ def main(api_endpoint, credentials, device_id, verbose,
         
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(24, GPIO.OUT)
     with SampleAssistant(device_id, conversation_stream, grpc_channel, grpc_deadline, device_handler) as assistant:
         # If file arguments are supplied:
         # exit after the first turn of the conversation.
@@ -431,9 +434,11 @@ def main(api_endpoint, credentials, device_id, verbose,
         wait_for_user_trigger = not once
         while True:
             if wait_for_user_trigger:
+                GPIO.output(24, GPIO.HIGH)
                 try:
                     logging.info('Press the button to send a new request...')
                     GPIO.wait_for_edge(27, GPIO.FALLING)
+                    GPIO.output(24, GPIO.LOW)
                 except KeyboardInterrupt:
                     GPIO.cleanup()
             continue_conversation = assistant.converse()
