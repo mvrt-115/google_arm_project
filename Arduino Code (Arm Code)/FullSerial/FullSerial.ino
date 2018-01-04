@@ -26,7 +26,6 @@
 #define ELEVATOR_OFFSET -16000 //in steps
 
 boolean commandReady = false; //boolean to determine if start-up was successful.
-boolean busy = true;
 
 AccelStepper joint1(1, 67, 66); // 1, stp, dir
 AccelStepper joint2(1, 65, 64); //1, stp, dir
@@ -56,7 +55,6 @@ void setup() {
   }
   pinMode(13,OUTPUT);
   digitalWrite(13,LOW);
-  busy = false;
 }
 
 boolean newGame(){
@@ -88,11 +86,16 @@ void offset() {
 void loop() {
 }
 
+bool busy() {
+  if (joint1.isRunning() || joint2.isRunning() || elevator.isRunning())
+    return true;
+  return false; 
+}
+
 void serialEvent() {
-  if(!busy){
-    busy = true;
+  if(!busy()){
     String incomingCommand = String();
-    char nextChar = '\r';
+    char nextChar = '\n';
     while (Serial.available()) {
       nextChar = Serial.read();
       Serial.println(nextChar);
@@ -101,30 +104,30 @@ void serialEvent() {
     }
     char firstChar = incomingCommand.charAt(0);
     if(firstChar == 'N'){
-      Serial.print("Accepted\r");
-      Serial.print("Start\r");
+      Serial.print("Accepted\n");
+      Serial.print("Start\n");
       newGame();
-      Serial.print("Finish\r");
+      Serial.print("Finish\n");
     }
     else if(commandReady && firstChar == 'P'){
       int toMark = incomingCommand.charAt(4) - '0';
       if(toMark < 1 || toMark > 9){
-        Serial.print("Invalid\r");
+        Serial.print("Invalid\n");
       }
       if(incomingCommand.charAt(2) == '1'){
-        Serial.print("Accepted\r");
-        Serial.print("Start\r");
+        Serial.print("Accepted\n");
+        Serial.print("Start\n");
         drawX(coords[toMark*2-2], coords[toMark*2-1]);
-        Serial.print("Finish\r");
+        Serial.print("Finish\n");
       }
       else if(incomingCommand.charAt(2) == '2'){
-        Serial.print("Accepted\r");
-        Serial.print("Start\r");
+        Serial.print("Accepted\n");
+        Serial.print("Start\n");
         drawCircle(coords[toMark*2-2], coords[toMark*2-1]);
-        Serial.print("Finish\r");
+        Serial.print("Finish\n");
       }
       else{
-        Serial.print("Invalid\r");
+        Serial.print("Invalid\n");
       }
     }
     else if(commandReady && firstChar == 'C'){
@@ -134,36 +137,36 @@ void serialEvent() {
       double x = firstPosition.toDouble();
       double y = secondPosition.toDouble();
       if(incomingCommand.charAt(2) == '1'){
-        Serial.print("Accepted\r");
-        Serial.print("Start\r");
+        Serial.print("Accepted\n");
+        Serial.print("Start\n");
         drawX(x, y);
-        Serial.print("Finish\r");
+        Serial.print("Finish\n");
 
       }
       else if(incomingCommand.charAt(2) == '2'){
-        Serial.print("Accepted\r");
-        Serial.print("Start\r");
+        Serial.print("Accepted\n");
+        Serial.print("Start\n");
         drawCircle(x, y);
-        Serial.print("Finish\r");
+        Serial.print("Finish\n");
       }
       else{
-        Serial.print("Invalid\r");
+        Serial.print("Invalid\n");
       }
     }
     else if(commandReady && firstChar == 'W'){
       int firstPosition = incomingCommand.substring(2,3).toInt();
       int secondPosition = incomingCommand.substring(4,5).toInt();
-      Serial.print("Accepted\r");
-      Serial.print("Start\r");
+      Serial.print("Accepted\n");
+      Serial.print("Start\n");
       winningLine(coords[firstPosition*2-2], coords[firstPosition*2-1], coords[secondPosition*2-2], coords[secondPosition*2-1]);
-      Serial.print("Finish\r");
+      Serial.print("Finish\n");
     }
     else{
-      Serial.print("Invalid\r");
+      Serial.print("Invalid\n");
     }
-    busy = false;
   }
   else{
+    Serial.print("Busy\n");
     Serial.flush();
   }
 }
