@@ -6,29 +6,28 @@ class Arm: # Uncomment serial stuff when arm is actually connected
     def __init__(self, port):
         try:
             self.ser = serial.Serial(port, 115200) # Open serial line
-            self.ser.write(b'N\r')
+            self.ser.write(b'N\n')
         except  serial.serialutil.SerialException:
             print('Failed to open port: ' + port)
-            exit()
         print('Starting Arm')
     
     # Communication with Arduino
     # decode('utf-8') : converts bytes into string
-    # read_until('/r') /r : will be used as dividers between messages
+    # read_until('/n') /n : will be used as dividers between messages
 
     #def isBusy(self):
         #Checkes if the Arduino is busy.
-        #self.ser.write(b'Busy/r')
-        #if self.ser.read_until('/r').decode('utf-8') == 'busy':
+        #self.ser.write(b'Busy/n')
+        #if self.ser.read_until('/n').decode('utf-8') == 'busy':
             #return True
         #return False
 
     def movePos(self, letter, move): # Comment out testing when connected to arm
         # Sends a signal to the arm to draw the input letter at the input position.
         # if self.isBusy() != True:
-        message = ('P '+str(letter)+' '+str(move)+'/r')
+        message = ('P '+str(letter)+' '+str(move)+'/n')
         self.ser.write(message.encode())
-        print('Sent over serial: P '+str(letter)+' '+str(move)+'/r') # Testing
+        print('Sent over serial: P '+str(letter)+' '+str(move)+'/n') # Testing
         #if self.ser.read_until('/r').decode('utf-8') == 'Invalid':
         #    print('Falied: Invalid request')
         #    return False
@@ -69,12 +68,13 @@ class Arm: # Uncomment serial stuff when arm is actually connected
             fNum = 9
             sNum = 1
         print(str(winNum))
-        self.ser.write(b('W '+str(fNum)+' '+str(sNum)+'/r'))
-        print('Sent over serial: W '+str(fNum)+' '+str(sNum)+'/r') # Testing
+        message = ('W '+str(fNum)+' '+str(sNum)+'/n')
+        self.ser.write(message.encode())
+        print('Sent over serial: W '+str(fNum)+' '+str(sNum)+'/n') # Testing
 
     def close(self):
         # Closes the serial port.
-        # self.ser.close()
+        self.ser.close()
         print('Serial port closed')
 
 class Board: # Should be complete
