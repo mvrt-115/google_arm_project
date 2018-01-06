@@ -237,6 +237,11 @@ void drawCircle(double x, double y) {
   elevatorRun();
   goTo(CIRCLE_RADIUS + x, y);
   for (int i = 0; i < PRECISION; i++) {
+    delay(500);
+    Serial.println(i);
+    Serial.println(CIRCLE_RADIUS * cos(9 * PI  / 4 * i / PRECISION) + x);
+    Serial.println(CIRCLE_RADIUS * sin(9 * PI  / 4 * i / PRECISION) + y);
+    delay(2000);
     goTo(CIRCLE_RADIUS * cos(9 * PI  / 4 * i / PRECISION) + x, CIRCLE_RADIUS * sin(9 * PI  / 4 * i / PRECISION) + y);
   }
   elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
