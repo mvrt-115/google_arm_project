@@ -59,7 +59,7 @@ void setup() {
   busy = false;
 }
 
-boolean newGame(){
+void newGame(){
   joint1.setAcceleration(JOINT_1_ACCELERATION);
   joint2.setAcceleration(JOINT_2_ACCELERATION);
   elevator.setAcceleration(ELEVATOR_ACCELERATION);
@@ -70,6 +70,9 @@ boolean newGame(){
 }
 
 void offset() {
+  joint1.setCurrentPosition(0);
+  joint2.setCurrentPosition(0);
+  elevator.setCurrentPosition(0);
   joint1.moveTo(JOINT_1_OFFSET);
   joint2.moveTo(JOINT_2_OFFSET);
   elevator.moveTo(ELEVATOR_OFFSET);
@@ -92,7 +95,7 @@ void serialEvent() {
   if(!busy){
     busy = true;
     String incomingCommand = String();
-    char nextChar = '\r';
+    char nextChar = '*';
     while (Serial.available()) {
       nextChar = Serial.read();
       Serial.println(nextChar);
@@ -101,30 +104,30 @@ void serialEvent() {
     }
     char firstChar = incomingCommand.charAt(0);
     if(firstChar == 'N'){
-      Serial.print("Accepted\r");
-      Serial.print("Start\r");
+      Serial.println("Accepted");
+      Serial.println("Start");
       newGame();
-      Serial.print("Finish\r");
+      Serial.println("Finish");
     }
     else if(commandReady && firstChar == 'P'){
       int toMark = incomingCommand.charAt(4) - '0';
       if(toMark < 1 || toMark > 9){
-        Serial.print("Invalid\r");
+        Serial.println("Invalid");
       }
       if(incomingCommand.charAt(2) == '1'){
-        Serial.print("Accepted\r");
-        Serial.print("Start\r");
+        Serial.println("Accepted");
+        Serial.println("Start");
         drawX(coords[toMark*2-2], coords[toMark*2-1]);
-        Serial.print("Finish\r");
+        Serial.println("Finish");
       }
       else if(incomingCommand.charAt(2) == '2'){
-        Serial.print("Accepted\r");
-        Serial.print("Start\r");
+        Serial.println("Accepted");
+        Serial.println("Start");
         drawCircle(coords[toMark*2-2], coords[toMark*2-1]);
-        Serial.print("Finish\r");
+        Serial.println("Finish");
       }
       else{
-        Serial.print("Invalid\r");
+        Serial.println("Invalid");
       }
     }
     else if(commandReady && firstChar == 'C'){
@@ -134,32 +137,32 @@ void serialEvent() {
       double x = firstPosition.toDouble();
       double y = secondPosition.toDouble();
       if(incomingCommand.charAt(2) == '1'){
-        Serial.print("Accepted\r");
-        Serial.print("Start\r");
+        Serial.println("Accepted");
+        Serial.println("Start");
         drawX(x, y);
-        Serial.print("Finish\r");
+        Serial.println("Finish");
 
       }
       else if(incomingCommand.charAt(2) == '2'){
-        Serial.print("Accepted\r");
-        Serial.print("Start\r");
+        Serial.println("Accepted");
+        Serial.println("Start");
         drawCircle(x, y);
-        Serial.print("Finish\r");
+        Serial.println("Finish");
       }
       else{
-        Serial.print("Invalid\r");
+        Serial.println("Invalid");
       }
     }
     else if(commandReady && firstChar == 'W'){
       int firstPosition = incomingCommand.substring(2,3).toInt();
       int secondPosition = incomingCommand.substring(4,5).toInt();
-      Serial.print("Accepted\r");
-      Serial.print("Start\r");
+      Serial.println("Accepted");
+      Serial.println("Start");
       winningLine(coords[firstPosition*2-2], coords[firstPosition*2-1], coords[secondPosition*2-2], coords[secondPosition*2-1]);
-      Serial.print("Finish\r");
+      Serial.println("Finish");
     }
     else{
-      Serial.print("Invalid\r");
+      Serial.println("Invalid");
     }
     busy = false;
   }
@@ -169,7 +172,7 @@ void serialEvent() {
 }
 
 void elevatorRun() {
-  while (elevator.distanceToGo() > 0) {
+  while (abs(elevator.distanceToGo()) > 0) {
     elevator.run();
   }
 }
@@ -232,8 +235,6 @@ void drawXSimple(double x, double y) {
 void drawCircle(double x, double y) {
   elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
   elevatorRun();
-  elevator.moveTo(ELEVATOR_DOWN); //move up to avoid writing on board
-  elevatorRun();
   goTo(CIRCLE_RADIUS + x, y);
   for (int i = 0; i < PRECISION; i++) {
     goTo(CIRCLE_RADIUS * cos(9 * PI  / 4 * i / PRECISION) + x, CIRCLE_RADIUS * sin(9 * PI  / 4 * i / PRECISION) + y);
@@ -266,10 +267,9 @@ void goTo(double x, double y) {
     joint2.moveTo((Z(x, y) - 180) * ARM_STEPS * JOINT_2_GEAR_REDUCTION / 360);
   }
 
-  while (abs(joint1.distanceToGo()) > 0 || abs(joint2.distanceToGo()) > 0 || abs(elevator.distanceToGo()) > 0) {
+  while (abs(joint1.distanceToGo()) > 0 || abs(joint2.distanceToGo()) > 0) {
     joint1.run();
     joint2.run();
-    elevator.run();
   }
 }
 
