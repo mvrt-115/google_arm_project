@@ -1,30 +1,19 @@
 # Serial Communication Protocol
 This document outlines how the RPI and Arduino talk with each other to carry out specific Tic-Tac-Toe moves.
 
-## `\r` Serves as a break inbetween all messages
+## `\n` Serves as a break inbetween all messages
 
 ## Commands:
-- Preset Positions
-- Custom Positions
-- Winning Line
-- New Game
+- Line
+- Arc
 
-### Preset Positions:
-- RPI Request Format: "P <X/O> <1-9>"
-- Arduino Action: Draw an X or O at one of the predetermined positions or "squares".
+### Lines:
+- RPI Request Format: "L <X1,Y1> <X2,Y2>"
+- Arduino Action: Draw an line from point 1 to point 2.
 
-### Custom Positions:
-- RPI Request Format: "C <X/O> <x> <y>"
-- Arduino Action: Draw an X or O at a custom position on the coordinate system.
-
-### New Game:
-- RPI Request Format: "N"
-- Arduino Action: Reset the game, re-home arm.
-
-### Winning Line:
-- RPI Request Format: "W <1-9> <1-9>"
-- Arduino Action: Draw line from the first to the second predetermined position to signify a win.
-
+### Arcs:
+- RPI Request Format: "A <X,Y> <R> <A1> <A2>"
+- Arduino Action: Draw an arc at with center at point with radius r. Starts at angle 1 and ends at angle 2.
 
 ## Responses:
 - Ready/Unready
@@ -36,8 +25,8 @@ This document outlines how the RPI and Arduino talk with each other to carry out
 - This set of responses are used when the RPI send the "New Game" Command.
 - If the homing procedure is successful, the Arduino replies with "Ready".
 - If there was an error during homing, the Ardino replies with "Not Ready".
-- If "Not Ready" is sent, the Arduino will accept no commands except for "New Game".
-- If "Not Ready" is sent, retry "New Game" Command, or reset. If problem persists, the arm may have to be repaired.
+- If "Not Ready" is sent, the Arduino will accept no commands.
+- If "Not Ready" is sent reset. If problem persists, the arm may have to be repaired.
 
 ### Busy:
 - This response is used when the RPI sends a Command.
