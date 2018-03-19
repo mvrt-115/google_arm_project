@@ -16,8 +16,10 @@
   - Inside each method, use the TTTARM code to play the game
 - [ ] Update current `TTTArm.py` code to use lines and arcs system
 - [ ] Update `pushtotalk_Button_CustomTraits.py` to use updated TTT code
-- [ ] Think of a new game
-- [ ] Code new game and intergrate into current system
+- [x] Think of a new game (Reverse Google QuickDraw)
+- [x] Code proof of concept
+- [ ] Create custom traits for RGQD
+- [ ] Code RGQD and intergrate into current system
 - [ ] Everything [else](https://imgur.com/gallery/RadSf)
 
 ## Other
