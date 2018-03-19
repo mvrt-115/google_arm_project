@@ -17,7 +17,7 @@
 - [ ] Update current `TTTArm.py` code to use lines and arcs system
 - [ ] Update `pushtotalk_Button_CustomTraits.py` to use updated TTT code
 - [x] Think of a new game (Reverse Google QuickDraw)
-- [x] Code proof of concept
+- [x] Code proof of concept for RGQD
 - [ ] Create custom traits for RGQD
 - [ ] Code RGQD and intergrate into current system
 - [ ] Everything [else](https://imgur.com/gallery/RadSf)
