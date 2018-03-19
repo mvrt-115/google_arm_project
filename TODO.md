@@ -10,11 +10,13 @@
 ## Rasberry Pi / Google Stuff
 - [ ] Get updated [example](https://developers.google.com/assistant/sdk/guides/service/python/extend/custom-actions?) to run
 - [ ] Make `pushtotalk_Button_CustomTraits.py` compatable with latest version
-- [ ] Update traits to accept different responses and have different questions
-- [ ] Integrate traits into code
-  - Each `@devicehandler` serves as a method call when the trait is triggered
+- [ ] Update `ttt_Actions.json` to follow `Example_Action.json` format
+- [ ] Update `ttt_Actions.json` to accept different responses and have different questions
+- [ ] Integrate actions into code
+  - Each `@devicehandler` serves as a method call when the action is triggered
   - Inside each method, use the TTTARM code to play the game
-- [ ] Update current `TTTArm.py` code to use lines and arcs system
+- [x] Update current `TTTArm.py` code to use lines and arcs system
+- [ ] Attempt to replace current text to speech solution with better one
 - [ ] Update `pushtotalk_Button_CustomTraits.py` to use updated TTT code
 - [x] Think of a new game (Reverse Google QuickDraw)
 - [x] Code proof of concept for RGQD

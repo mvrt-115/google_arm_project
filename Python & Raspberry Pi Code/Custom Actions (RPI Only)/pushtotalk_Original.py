@@ -12,23 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Custom Traits (triggerd from pushtotalk.py):
-#             -startGame
-#             -setLetter
-#             -choosePosition
-# Game Logic (Main program is pushtotalk): -when startGame is triggered, create a new game and override any existing ones
-#             -player can select letter ('X' or 'O') through setLetter (default letter is 'X')
-#             -IF player letter is 'O':
-#                 -calculate starting move and send signal to arm to draw 'X' at calculated postition
-#                 -wait for arm to finish and signal when done
-#             -repeat until game is finished:
-#                 -wait for input from choosePostition
-#                 -place player letter at input position
-#                 -calculate computer move and place opposite letter
-#                 -wait for arm to finish and signal when done
-#             -draw winning line
-# We will gTTS for TTS, just follow the examples given
-
 """Sample that implements a gRPC client for the Google Assistant API."""
 
 import concurrent.futures
@@ -39,9 +22,6 @@ import os.path
 import pathlib2 as pathlib
 import sys
 import uuid
-import RPi.GPIO as GPIO
-import serial
-import time
 
 import click
 import grpc
@@ -54,11 +34,6 @@ from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2_grpc
 )
 from tenacity import retry, stop_after_attempt, retry_if_exception
-
-from gtts import gTTS
-from TTTArm import TTTGame
-from TTTArm import Board
-from TTTArm import Arm
 
 try:
     from . import (
@@ -427,69 +402,11 @@ def main(api_endpoint, credentials, project_id,
 
     @device_handler.command('action.devices.commands.OnOff')
     def onoff(on):
-        ser = serial.Serial('/dev/ttyACM0', 115200)
-        logging.info(ser.name)
         if on:
             logging.info('Turning device on')
-            ser.write(b'1')
         else:
             logging.info('Turning device off')
-            ser.write(b'0')
-        ser.close()
 
-    tttGame = TTTGame()
-    @device_handler.command('StartGame')
-    def startGame(game):
-        time.sleep(1)
-        logging.info('Starting new game')
-        tttGame = new TTTGame()
-        # Fake TSS System (better sounding):
-        os.system('omxplayer -o alsa "TTS Audio"/start.wav')
-        os.system('omxplayer -o alsa "TTS Audio"/XorO.wav')
-
-    @device_handler.command('SetLetter')
-    def setLetter(letter):
-        time.sleep(1)
-        logging.info('Setting player letter to ' + str(letter))
-        if 'o' in letter.lower():
-            tttGame.setPLetter(2)
-        # Fake TSS System (better sounding):
-        if tttGame.getPLetter() == 1:
-            os.system('omxplayer -o alsa "TTS Audio"/letterX.wav')
-        elif tttGame.getPLetter() == 2:
-            os.system('omxplayer -o alsa "TTS Audio"/letterO.wav')
-        os.system('omxplayer -o alsa "TTS Audio"/xFirst.wav')
-
-    @device_handler.command('ChoosePos')
-    def choosePos(pos):
-        time.sleep(1)
-        logging.info('Placing piece at postition ' + str(pos))
-        # Fake TSS System (better sounding):
-        if int(pos) < 1 or int(pos) > 9:
-            os.system('omxplayer -o alsa "TTS Audio"/within.wav')
-            os.system('omxplayer -o alsa "TTS Audio"/again.wav')
-            return
-        moveResult = tttGame.makeMove(int(pos))
-        tttGame.board.draw()
-        if moveResult == 'Failure': # If spot is closed:
-            os.system('omxplayer -o alsa "TTS Audio"/occupied.wav')
-            os.system('omxplayer -o alsa "TTS Audio"/again.wav')
-            return
-        elif moveResult == 'Good':
-            os.system('omxplayer -o alsa "TTS Audio"/p' + pos + '.wav')
-            return
-        elif moveResult == 'Tie':
-            os.system('omxplayer -o alsa "TTS Audio"/tie.wav')
-        elif moveResult == '1W':
-            os.system('omxplayer -o alsa "TTS Audio"/xWon.wav')
-        elif moveResult == '2W':
-            os.system('omxplayer -o alsa "TTS Audio"/oWon.wav')
-        os.system('omxplayer -o alsa "TTS Audio"/thank.wav')
-
-        
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    GPIO.setup(24, GPIO.OUT)
     with SampleAssistant(lang, device_model_id, device_id,
                          conversation_stream,
                          grpc_channel, grpc_deadline,
@@ -507,14 +424,8 @@ def main(api_endpoint, credentials, project_id,
         wait_for_user_trigger = not once
         while True:
             if wait_for_user_trigger:
-                GPIO.output(24, GPIO.HIGH)
-                try:
-                    logging.info('Press the button to send a new request...')
-                    GPIO.wait_for_edge(27, GPIO.FALLING)
-                    GPIO.output(24, GPIO.LOW)
-                except KeyboardInterrupt:
-                    GPIO.cleanup()
-            continue_conversation = assistant.converse()
+                click.pause(info='Press Enter to send a new request...')
+            continue_conversation = assistant.assist()
             # wait for user trigger if there is no follow-up turn in
             # the conversation.
             wait_for_user_trigger = not continue_conversation
@@ -522,7 +433,7 @@ def main(api_endpoint, credentials, project_id,
             # If we only want one conversation, break.
             if once and (not continue_conversation):
                 break
-    GPIO.cleanup()
+
 
 if __name__ == '__main__':
     main()
