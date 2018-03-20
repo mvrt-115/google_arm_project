@@ -109,6 +109,13 @@ void serialEvent() {
       Serial.println("Accepted");
       Serial.println("Start");
       // Parse data and send to drawLine()
+      int firstSpace = incomingCommand.indexOf(" ");
+      int secondSpace = incomingCommand.indexOf(" ",firstSpace+1);
+      int firstComma = incomingCommand.indexOf(" ");
+      int secondComma = incomingCommand.indexOf(" ",firstComma+1);
+      String point1[] = {incomingCommand.substring(firstSpace+1,firstComma),incomingCommand.substring(firstComma+1,secondSpace)};
+      String point2[] = {incomingCommand.substring(secondSpace+1,secondComma),incomingCommand.substring(secondComma+1)};
+      drawLine(int(point1[0]),int(point1[1]),int(point2[0]),int(point2[]));
       Serial.println("Finish");
       
     }
