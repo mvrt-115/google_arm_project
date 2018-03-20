@@ -1,83 +1,312 @@
 {
-    "manifest":{
-      "displayName":"TTT game",
-      "invocationName":"TTT game",
-      "category":"PRODUCTIVITY"
+    "manifest": {
+        "displayName": "VCR",
+        "invocationName": "VCR",
+        "category": "PRODUCTIVITY"
     },
-    "actions":[
-      {
-        "name":"actions.devices",
-        "config":{
-          "@type":"type.googleapis.com/google.actions.v2.devices.DeviceControl",
-          "commands":[
-            {
-              "intent":{
-                "name":"StartGame",
-                "parameters":[
-                  {
-                    "name":"game",
-                    "type":"SchemaOrg_Text"
-                  }
-                ],
-                "trigger":{
-                  "queryPatterns":[
-                    "Start a new Tic Tac Toe $SchemaOrg_Text:game"
-                  ]
-                }
-              },
-              "directResponseFulfillment":{
-                "ttsPattern":"Ok. Starting a new game. What letter would you like to be. X or O."
-              },
-              "requiredTraits":[
-                "StartGame"
-              ]
+    "actions": [
+        {
+            "name": "com.acme.actions.start_game",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
             },
-            {
-              "intent":{
-                "name":"SetLetter",
-                "parameters":[
-                  {
-                    "name":"letter",
-                    "type":"SchemaOrg_Text"
-                  }
+            "intent": {
+                "name": "com.acme.actions.start_game",
+                "parameters": [
+                    {
+                        "name": "game",
+                        "type": "GameType"
+                    }
                 ],
-                "trigger":{
-                  "queryPatterns":[
-                    "Set my letter to $SchemaOrg_Text:letter"
-                  ]
+                "trigger": {
+                    "queryPatterns": [
+                        "Start a new $GameType:game Game"
+                    ]
                 }
-              },
-              "directResponseFulfillment":{
-                "ttsPattern":"Ok. setting letter to $letter . X will go first."
-              },
-              "requiredTraits":[
-                "SetLetter"
-              ]
             },
-            {
-              "intent":{
-                "name":"ChoosePos",
-                "parameters":[
-                  {
-                    "name":"pos",
-                    "type":"SchemaOrg_Number"
-                  }
-                ],
-                "trigger":{
-                  "queryPatterns":[
-                    "Move to (position)? $SchemaOrg_Number:pos"
-                  ]
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok. Starting a new $game.raw game."
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.acme.commands.start_game",
+                                    "params": {
+                                        "game": "$game"
+                                    }
+                                }
+                            }
+                        ]
+                    }
                 }
-              },
-              "directResponseFulfillment":{
-                "ttsPattern":"Placing piece at position $pos ."
-              },
-              "requiredTraits":[
-                "ChoosePos"
-              ]
             }
-          ]
+        },
+        {
+            "name": "com.acme.actions.set_letter",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.acme.actions.set_letter",
+                "parameters": [
+                    {
+                        "name": "XorO",
+                        "type": "Letter"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [
+                        "Set my letter to $Letter:XorO"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok. setting letter to $XorO.raw . X will go first."
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.acme.commands.set_letter",
+                                    "params": {
+                                        "letter": "$XorO"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "com.acme.actions.choose_position",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.acme.actions.choose_position",
+                "parameters": [
+                    {
+                        "name": "pos",
+                        "type": "Position"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [
+                        "Move to (position)? $Position:pos"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok, Placing piece at position $pos.raw ."
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.acme.actions.choose_position",
+                                    "params": {
+                                        "position": "$pos"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "com.acme.actions.guess_object",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.acme.actions.guess_object",
+                "parameters": [
+                    {
+                        "name": "object",
+                        "type":"SchemaOrg_Text"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [
+                        "Is it (a)? $SchemaOrg_Text:object",
+                        "It is (a)? $SchemaOrg_Text:object",
+                        "The object is (a)? $SchemaOrg_Text:object"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok."
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.acme.commands.guess_object",
+                                    "params": {
+                                        "object": "$object"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
         }
-      }
+    ],
+    "types": [
+        {
+            "name": "$GameType",
+            "entities": [
+                {
+                    "key": "TTT",
+                    "synonyms": [
+                        "Tic Tac Toe",
+                        "TTT"
+                    ]
+                },
+                {
+                    "key": "RGQD",
+                    "synonyms": [
+                        "RGQD",
+                        "Quick Draw",
+                        "Reverse Google Quick Draw",
+                        "Google Quick Draw"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "$Letter",
+            "entities": [
+                {
+                    "key": "X",
+                    "synonyms": [
+                        "Ex",
+                        "X"
+                    ]
+                },
+                {
+                    "key": "O",
+                    "synonyms": [
+                        "O",
+                        "Oh"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "$Position",
+            "entities": [
+                {
+                    "key": "1",
+                    "synonyms": [
+                        "1",
+                        "One",
+                        "Top Left"
+                    ]
+                },
+                {
+                    "key": "2",
+                    "synonyms": [
+                        "2",
+                        "Two",
+                        "Top Middle",
+                        "Too",
+                        "To"
+                    ]
+                },
+                {
+                    "key": "3",
+                    "synonyms": [
+                        "3",
+                        "Three",
+                        "Top Right"
+                    ]
+                },
+                {
+                    "key": "4",
+                    "synonyms": [
+                        "4",
+                        "Four",
+                        "Middle Left"
+                    ]
+                },
+                {
+                    "key": "5",
+                    "synonyms": [
+                        "5",
+                        "Five",
+                        "Middle"
+                    ]
+                },
+                {
+                    "key": "6",
+                    "synonyms": [
+                        "6",
+                        "Six",
+                        "Middle Right"
+                    ]
+                },
+                {
+                    "key": "7",
+                    "synonyms": [
+                        "7",
+                        "Seven",
+                        "Bottom Left"
+                    ]
+                },
+                {
+                    "key": "8",
+                    "synonyms": [
+                        "8",
+                        "Eight",
+                        "Bottom Middle"
+                    ]
+                },
+                {
+                    "key": "9",
+                    "synonyms": [
+                        "9",
+                        "Nine",
+                        "Bottom Right"
+                    ]
+                }
+            ]
+        }
     ]
-  }
+}
