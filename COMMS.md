@@ -4,8 +4,13 @@ This document outlines how the RPI and Arduino talk with each other to carry out
 ## `\n` Serves as a break inbetween all messages
 
 ## Commands:
+- New Game
 - Line
 - Arc
+
+### New Game
+- RPI Request Format: "N"
+- Arduino Action: Reset to home position.
 
 ### Lines:
 - RPI Request Format: "L <X1,Y1> <X2,Y2>"
