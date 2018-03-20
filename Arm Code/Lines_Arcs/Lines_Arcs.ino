@@ -38,20 +38,15 @@ const double b = 6.49; // length of joint 2(farther from base) in inches
 double currentX = 0.00;
 double currentY = 0.00;
 
-double coords[18] = { // coordinate points in sets of (x,y) format
-  0.0, 0.0, // position A1
-  0.0, 0.0, // position A2
-  0.0, 0.0, // position A3
-  0.0, 0.0, // position B1
-  0.0, 0.0, // position B2
-  0.0, 0.0, // position B3
-  0.0, 0.0, // position C1
-  0.0, 0.0, // position C2
-  0.0, 0.0  // position C3
-};
+boolean commandReady = false; //boolean to determine if start-up was successful.
+boolean busy = true;
 
 void setup() {
   Serial.begin(BAUD_RATE);
+  while(!Serial){
+    ;
+  }
+  busy = false;
   joint1.setAcceleration(JOINT_1_ACCELERATION);
   joint2.setAcceleration(JOINT_2_ACCELERATION);
   elevator.setAcceleration(ELEVATOR_ACCELERATION);
@@ -92,8 +87,58 @@ void setup() {
   */
 }
 
-//D1 = angle between x-axis and hypotenuse
+void serialEvent() {
+  if(!busy){
+    busy = true;
+    String incomingCommand = String();
+    char nextChar = '*';
+    while (Serial.available()) {
+      nextChar = Serial.read();
+      Serial.println(nextChar);
+      incomingCommand.concat(nextChar);
+      Serial.println(incomingCommand);
+    }
+    char firstChar = incomingCommand.charAt(0);
+    if(firstChar == 'N'){
+      Serial.println("Accepted");
+      Serial.println("Start");
+      newGame();
+      Serial.println("Finish");
+    }
+    else if(commandReady && firstChar == 'L'){
+      Serial.println("Accepted");
+      Serial.println("Start");
+      // Parse data and send to drawLine()
+      Serial.println("Finish");
+      
+    }
+    else if(commandReady && firstChar == 'A'){
+      Serial.println("Accepted");
+      Serial.println("Start");
+      // Parse data and send to drawArc()
+      Serial.println("Finish");
+    }
+    else{
+      Serial.println("Invalid");
+    }
+    busy = false;
+  }
+  else{
+    Serial.flush();
+  }
+}
 
+void newGame(){
+  joint1.setAcceleration(JOINT_1_ACCELERATION);
+  joint2.setAcceleration(JOINT_2_ACCELERATION);
+  elevator.setAcceleration(ELEVATOR_ACCELERATION);
+  elevator.setMaxSpeed(ELEVATOR_MAX_SPEED);
+  offset();
+  commandReady = true;
+  Serial.println("Ready");
+}
+
+//D1 = angle between x-axis and hypotenuse
 double D1(double x, double y) {
   if (x != 0) {
     return degrees(atan2(y, x));
@@ -104,14 +149,12 @@ double D1(double x, double y) {
 }
 
 //D2 = angle between hypotenuse and 1st joint
-
 double D2(double x, double y) {
   double c = sqrt(x * x + y * y);
   return degrees(acos((a * a + c * c - b * b) / (2 * a * c)));
 }
 
 // Z = angle between 1st and 2nd joint
-
 double Z(double x, double y) {
   double c = sqrt(x * x + y * y);
   return degrees(acos((a * a + b * b - c * c) / (2 * a * b)));
@@ -212,6 +255,28 @@ void drawLine(double startX, double startY, double endX, double endY) {
   }
 }
 
+void drawArc(double startX, double startY, double radius, double startA, double endA) {  
+  elevator.moveTo(ELEVATOR_UP);
+  elevatorRun();
+  // Draw Arc using data
+}
+
+//Draws circle at (x,y) with radius .5 in
+void drawCircle(double x, double y) {
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
+  goTo(CIRCLE_RADIUS + x, y);
+  for (int i = 0; i < PRECISION; i++) {
+    goTo(CIRCLE_RADIUS * cos(9 * PI / 4 * i / PRECISION) + x, CIRCLE_RADIUS * sin(9 * PI / 4 * i / PRECISION) + y);
+    if (i == 0) {
+      elevator.moveTo(ELEVATOR_DOWN);
+      elevatorRun();
+    }
+  }
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+  elevatorRun();
+}
+
 void elevatorRun() {
   while (abs(elevator.distanceToGo()) > 0) {
     elevator.run();
@@ -232,43 +297,5 @@ boolean generateTable(double x1, double y1, double x2, double y2) {
       Serial.println(coords[6 * i + 2 * j + 1]);
     }
   }
-}
-
-//draws an X at a given (x,y) coordinate, where each line in the X has a length of 1 inch
-
-void drawX(double x, double y) {
-  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
-  elevatorRun();
-  goTo(x - HALF_X_WIDTH, y - HALF_X_WIDTH); // move to bottom left of x
-  elevator.moveTo(ELEVATOR_DOWN); // move down to draw
-  elevatorRun();
-  for (double i = 0.00; i < PRECISION; i++) {
-    goTo((x - HALF_X_WIDTH) + i / PRECISION, (y - HALF_X_WIDTH) + i / PRECISION);
-  }
-  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
-  elevatorRun();
-  goTo(x - HALF_X_WIDTH, y + HALF_X_WIDTH); // move to top left of x
-  elevator.moveTo(ELEVATOR_DOWN); // move down to draw
-  elevatorRun();
-  for (double i = 0.00; i < PRECISION; i++) {
-    goTo((x - HALF_X_WIDTH) + i / PRECISION, (y + HALF_X_WIDTH) - i / PRECISION);
-  }
-}
-
-//draws circle at (x,y) with radius .5 in
-
-void drawCircle(double x, double y) {
-  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
-  elevatorRun();
-  goTo(CIRCLE_RADIUS + x, y);
-  for (int i = 0; i < PRECISION; i++) {
-    goTo(CIRCLE_RADIUS * cos(9 * PI / 4 * i / PRECISION) + x, CIRCLE_RADIUS * sin(9 * PI / 4 * i / PRECISION) + y);
-    if (i == 0) {
-      elevator.moveTo(ELEVATOR_DOWN);
-      elevatorRun();
-    }
-  }
-  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
-  elevatorRun();
 }
 
