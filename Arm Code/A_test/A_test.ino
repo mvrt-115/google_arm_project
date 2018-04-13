@@ -39,20 +39,12 @@ const double b = 6.5963; // length of joint 2(farther from base) in inches
 double currentX = 0.00;
 double currentY = 0.00;
 
-double coords[18] = { // coordinate points in sets of (x,y) format
-  0.0, 0.0, // position A1
-  0.0, 0.0, // position A2
-  0.0, 0.0, // position A3
-  0.0, 0.0, // position B1
-  0.0, 0.0, // position B2
-  0.0, 0.0, // position B3
-  0.0, 0.0, // position C1
-  0.0, 0.0, // position C2
-  0.0, 0.0  // position C3
-};
+boolean commandReady = true; //boolean to determine if start-up was successful.
+boolean busy = true;
 
 void setup() {
   Serial.begin(BAUD_RATE);
+  busy = false;
   joint1.setAcceleration(JOINT_1_ACCELERATION);
   joint2.setAcceleration(JOINT_2_ACCELERATION);
   elevator.setAcceleration(ELEVATOR_ACCELERATION);
@@ -60,7 +52,64 @@ void setup() {
   joint1.setMaxSpeed(JOINT_1_MAX_SPEED);
   joint2.setMaxSpeed(JOINT_2_MAX_SPEED);
   offset();
-  drawArc(100, 100, 50, PI / 2, PI);
+}
+
+void serialEvent() {
+  if(!busy){
+    busy = true;
+    String incomingCommand = String();
+    char nextChar = '*';
+    while (Serial.available()) {
+      nextChar = Serial.read();
+      Serial.println(nextChar);
+      incomingCommand.concat(nextChar);
+      Serial.println(incomingCommand);
+    }
+    char firstChar = incomingCommand.charAt(0);
+    if(firstChar == 'N'){
+      Serial.println("Accepted");
+      Serial.println("Start");
+      newGame();
+      Serial.println("Finish");
+    }
+    else if(commandReady && firstChar == 'L'){
+      Serial.println("Accepted");
+      Serial.println("Start");
+      // Parse data and send to drawLine()
+      int firstSpace = incomingCommand.indexOf(" ");
+      int secondSpace = incomingCommand.indexOf(" ",firstSpace+1);
+      int firstComma = incomingCommand.indexOf(",");
+      int secondComma = incomingCommand.indexOf(",",firstComma+1);
+      String point1[] = {incomingCommand.substring(firstSpace+1,firstComma),incomingCommand.substring(firstComma+1,secondSpace)};
+      String point2[] = {incomingCommand.substring(secondSpace+1,secondComma),incomingCommand.substring(secondComma+1)};
+      drawLine(int(point1[0]),int(point1[1]),int(point2[0]),int(point2[1]));
+      Serial.println("Finish");
+      
+    }
+    else if(commandReady && firstChar == 'A'){
+      Serial.println("Accepted");
+      Serial.println("Start");
+      // Parse data and send to drawArc()
+      Serial.println("Finish");
+    }
+    else{
+      Serial.println("Invalid");
+    }
+    busy = false;
+  }
+  else{
+    Serial.flush();
+  }
+}
+
+void newGame(){
+  joint1.setAcceleration(JOINT_1_ACCELERATION);
+  joint2.setAcceleration(JOINT_2_ACCELERATION);
+  elevator.setAcceleration(ELEVATOR_ACCELERATION);
+  elevator.setMaxSpeed(ELEVATOR_MAX_SPEED);
+  offset();
+  commandReady = true;
+  Serial.println("Ready");
 }
 
 void drawGridRectangle() {
@@ -175,6 +224,7 @@ void offset() {
   elevator.setCurrentPosition(0);
   currentX = 0.0;
   currentY = a + b;
+  Serial.print("Offset Done");
 }
 
 void goTo(double x, double y) {
@@ -277,18 +327,18 @@ void elevatorRun() {
 
 //Generates a coordinate lookup table based off of two corners of the table.
 //The coordinates fed in must be the positions of A1 and C3, in that order.
-boolean generateTable(double x1, double y1, double x2, double y2) {
-  double deltaX = (x2 - x1) / 3.0;
-  double deltaY = (y2 - y1) / 3.0;
-  for (int i = 0; i < NUM_ROWS; i++) { //Rows A, B, C
-    for (int j = 0; j < NUM_COLUMNS; j++) { //Columns 1, 2, 3
-      coords[6 * i + 2 * j] = x1 + deltaX * (double)(i);
-      coords[6 * i + 2 * j + 1] = y1 + deltaY * (double)(j);
-      Serial.println(coords[6 * i + 2 * j]);
-      Serial.println(coords[6 * i + 2 * j + 1]);
-    }
-  }
-}
+//boolean generateTable(double x1, double y1, double x2, double y2) {
+//  double deltaX = (x2 - x1) / 3.0;
+//  double deltaY = (y2 - y1) / 3.0;
+//  for (int i = 0; i < NUM_ROWS; i++) { //Rows A, B, C
+//    for (int j = 0; j < NUM_COLUMNS; j++) { //Columns 1, 2, 3
+//      coords[6 * i + 2 * j] = x1 + deltaX * (double)(i);
+//      coords[6 * i + 2 * j + 1] = y1 + deltaY * (double)(j);
+//      Serial.println(coords[6 * i + 2 * j]);
+//      Serial.println(coords[6 * i + 2 * j + 1]);
+//    }
+//  }
+//}
 
 //draws an X at a given (x,y) coordinate
 
