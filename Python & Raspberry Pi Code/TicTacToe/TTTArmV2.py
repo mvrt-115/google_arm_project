@@ -11,7 +11,7 @@ class Arm:
             print('Failed to open port: ' + port)
             exit()
         print('Starting Arm')
-        self.xCoords = {0, 50, 50, 50, 150, 150, 150, 250, 250, 250}
+        self.xCoords = {0, 50, 150, 250, 50, 150, 250, 50, 150, 250}
         self.yCoords = {0, 50, 50, 50, 150, 150, 150, 250, 250, 250}
 
     def drawLetter(self, letter, move): # Comment out testing when connected to arm
