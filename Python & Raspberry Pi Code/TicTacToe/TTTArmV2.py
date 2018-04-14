@@ -1,30 +1,38 @@
 # Tic Tac Toe class object with arm interactions
 import random
 import serial
+import time
 
 class Arm:
-    def __init__(self, port):
-        try:
-            self.ser = serial.Serial(port, 115200) # Open serial line
-            self.ser.write(b'N\n')
-        except  serial.serialutil.SerialException:
-            print('Failed to open port: ' + port)
-            exit()
+    def __init__(self, port, testing):
+        if not testing:
+            try:
+                self.ser = serial.Serial(port, 115200) # Open serial line
+                #self.ser.write('N\n'.encode())
+            except  serial.serialutil.SerialException:
+                print('Failed to open port: ' + port)
+                exit()
         print('Starting Arm')
-        self.xCoords = {0, 50, 150, 250, 50, 150, 250, 50, 150, 250}
-        self.yCoords = {0, 50, 50, 50, 150, 150, 150, 250, 250, 250}
+        self.t = testing
+        self.xCoords = [0, 50, 150, 250, 50, 150, 250, 50, 150, 250]
+        self.yCoords = [0, 50, 50, 50, 150, 150, 150, 250, 250, 250]
 
     def drawLetter(self, letter, move): # Comment out testing when connected to arm
         if letter == 1:
             # Draw X
             stroke1 = ('L '+str(self.xCoords[move]-25)+','+str(self.yCoords[move]-25)+' '+str(self.xCoords[move]+25)+','+str(self.yCoords[move]+25)+'\n')
             stroke2 = ('L '+str(self.xCoords[move]-25)+','+str(self.yCoords[move]+25)+' '+str(self.xCoords[move]+25)+','+str(self.yCoords[move]-25)+'\n')
-            self.ser.write(stroke1.encode())
-            self.ser.write(stroke2.encode())
+            if not self.t:
+                self.ser.write(stroke1.encode())
+                time.sleep(15)
+                self.ser.write(stroke2.encode())
+                time.sleep(15)
         else:
-            # Draw Y
-            stroke = ('A '+str(self.xCoords[move]-25)+','+str(self.yCoords[move]-25)+' 25 '+'0 '+'360'+'\n')
-            self.ser.write(stroke.encode())
+            # Draw O
+            stroke = ('A '+str(self.xCoords[move])+','+str(self.yCoords[move])+' 25 '+'0 '+'360'+'\n')
+            if not self.t:
+                self.ser.write(stroke.encode())
+                time.sleep(15)
         return True # Testing
 
     def drawBoard(self): # Comment out testing when connected to arm
@@ -32,10 +40,11 @@ class Arm:
         stroke2 = ('L 200,0 200,300\n')
         stroke3 = ('L 0,100 300,100\n')
         stroke4 = ('L 0,200 300,200\n')
-        self.ser.write(stroke1.encode())
-        self.ser.write(stroke2.encode())
-        self.ser.write(stroke3.encode())
-        self.ser.write(stroke4.encode())
+        if not self.t:
+            self.ser.write(stroke1.encode())
+            self.ser.write(stroke2.encode())
+            self.ser.write(stroke3.encode())
+            self.ser.write(stroke4.encode())
         return True # Testing
 
     def close(self):
@@ -101,11 +110,12 @@ class Board: # Should be complete
         return dupeBoard
 
 class TTTGame:
-    def __init__(self):
+    def __init__(self, testing):
         self.board = Board()
         self.playerLetter = 1 # 1 = 'X', 2 = 'O', default is 'X'
         self.computerLetter = 2
-        self.arm = Arm('/dev/ttyACM0')
+        self.arm = Arm('/dev/ttyACM0', testing)
+        self.setLetter = False
 
     def makeMove(self, move):
         # Makes a move on the board with the player letter at input position.
@@ -131,6 +141,8 @@ class TTTGame:
         return 'Good'
 
     def setPLetter(self, le):
+        if self.setLetter:
+           return 'Done' 
         self.playerLetter = le
         if self.playerLetter == 1:
             self.computerLetter = 2
@@ -141,7 +153,9 @@ class TTTGame:
             print('Making Comp Move') # Testing
             compMove = self.getComputerMove()
             self.board.makeMove(self.computerLetter, compMove) # Calculate next move and place
-            self.arm.movePos(self.computerLetter, compMove)
+            self.arm.drawLetter(self.computerLetter, compMove)
+        self.setLetter = True
+        return 'Set'
     
     def getPLetter(self):
         return self.playerLetter
@@ -223,12 +237,13 @@ class TTTGame:
 def _test():
     #Testing:
     print('Testing:')
-    g = TTTGame()
+    g = TTTGame(True)
     while True:
         letter = input('What character: X(1) or O(2) ')
         if letter in ('1', '2'):
             break
     g.setPLetter(int(letter))
+    print(g.getPLetter())
     while not g.board.isBoardFull():
         g.board.draw()
         playerMove = input('Player move: ')
