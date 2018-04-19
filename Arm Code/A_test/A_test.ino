@@ -19,11 +19,11 @@
 #define ELEVATOR_UP 300
 #define ELEVATOR_DOWN -500
 #define PRECISION 100 //higher precision = lower speed
-#define HALF_X_WIDTH 30
 #define JOINT_1_OFFSET -1840 //in steps
 #define JOINT_2_OFFSET  -3980 //in steps
 #define ELEVATOR_OFFSET -15000 //in steps //-16000
 #define LINE_STEP 2
+#define ARC_STEP .5
 
 #define JOINT_1_MAX_SPEED 800
 #define JOINT_2_MAX_SPEED JOINT_1_MAX_SPEED*JOINT_2_GEAR_REDUCTION
@@ -129,37 +129,7 @@ void drawGridRectangle() {
   drawLine(300, 0, 0, 0);
 }
 
-void drawArc(double centerX, double centerY, double radius, double startAngle, double endAngle) {
-  double startX = centerX + radius * cos(startAngle);
-  double startY = centerY + radius * sin(startAngle);
-
-  elevator.moveTo(ELEVATOR_UP);
-  elevatorRun();
-  goTo(startX, startY);
-  elevator.moveTo(ELEVATOR_DOWN);
-  elevatorRun();
-
-  double angle = endAngle - startAngle;
-
-  if (angle > 0) {
-
-    for (double i = startAngle; i <= endAngle; i += ARC_STEP) {
-      goTo(radius * cos(i) + centerX, radius * sin(i) + centerY);
-    }
-  }
-  else {
-    for (double i = startAngle; i >= endAngle; i -= ARC_STEP) {
-      goTo(radius * cos(i) + centerX, radius * sin(i) + centerY);
-    }
-  }
-
-
-}
-
-
-
 //D1 = angle between x-axis and hypotenuse
-
 double D1(double x, double y) {
   if (x != 0) {
     return degrees(atan2(y, x));
@@ -170,14 +140,12 @@ double D1(double x, double y) {
 }
 
 //D2 = angle between hypotenuse and 1st joint
-
 double D2(double x, double y) {
   double c = sqrt(x * x + y * y);
   return degrees(acos((a * a + c * c - b * b) / (2 * a * c)));
 }
 
 // Z = angle between 1st and 2nd joint
-
 double Z(double x, double y) {
   double c = sqrt(x * x + y * y);
   return degrees(acos((a * a + b * b - c * c) / (2 * a * b)));
