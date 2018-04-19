@@ -15,16 +15,15 @@
 #define JOINT_2_ACCELERATION JOINT_1_ACCELERATION*JOINT_2_GEAR_REDUCTION
 #define ELEVATOR_ACCELERATION 1500
 #define ELEVATOR_MAX_SPEED 4000
-#define CIRCLE_RADIUS 20
-#define ELEVATOR_UP 500
-#define ELEVATOR_DOWN -300
-#define PRECISION 50 //higher precision = lower speed
+#define CIRCLE_RADIUS 25
+#define ELEVATOR_UP 300
+#define ELEVATOR_DOWN -500
+#define PRECISION 100 //higher precision = lower speed
 #define HALF_X_WIDTH 30
 #define JOINT_1_OFFSET -1840 //in steps
 #define JOINT_2_OFFSET  -3980 //in steps
-#define ELEVATOR_OFFSET -16100 //in steps //-16000
-#define LINE_STEP .02
-#define ARC_STEP .01
+#define ELEVATOR_OFFSET -15000 //in steps //-16000
+#define LINE_STEP 2
 
 #define JOINT_1_MAX_SPEED 800
 #define JOINT_2_MAX_SPEED JOINT_1_MAX_SPEED*JOINT_2_GEAR_REDUCTION
@@ -34,24 +33,26 @@ AccelStepper joint2(1, 13, 12); //1, stp, dir
 AccelStepper elevator(1, 6, 7); //1, stp, dir
 
 const double a = 6.473503; // length of joint 1(closer to base) in inches
-const double b = 6.5963; // length of joint 2(farther from base) in inches
+const double b = 6.4963; // length of joint 2(farther from base) in inches
 
 double currentX = 0.00;
 double currentY = 0.00;
 
-boolean commandReady = true; //boolean to determine if start-up was successful.
-boolean busy = true;
+boolean busy = false;
+boolean commandReady = true;
 
 void setup() {
   Serial.begin(BAUD_RATE);
-  busy = false;
+  while(!Serial){
+    ;
+  }
+  Serial.print("Connected");
   joint1.setAcceleration(JOINT_1_ACCELERATION);
   joint2.setAcceleration(JOINT_2_ACCELERATION);
   elevator.setAcceleration(ELEVATOR_ACCELERATION);
   elevator.setMaxSpeed(ELEVATOR_MAX_SPEED);
   joint1.setMaxSpeed(JOINT_1_MAX_SPEED);
   joint2.setMaxSpeed(JOINT_2_MAX_SPEED);
-  offset();
 }
 
 void serialEvent() {
@@ -69,7 +70,7 @@ void serialEvent() {
     if(firstChar == 'N'){
       Serial.println("Accepted");
       Serial.println("Start");
-      newGame();
+      offset();
       Serial.println("Finish");
     }
     else if(commandReady && firstChar == 'L'){
@@ -82,7 +83,7 @@ void serialEvent() {
       int secondComma = incomingCommand.indexOf(",",firstComma+1);
       String point1[] = {incomingCommand.substring(firstSpace+1,firstComma),incomingCommand.substring(firstComma+1,secondSpace)};
       String point2[] = {incomingCommand.substring(secondSpace+1,secondComma),incomingCommand.substring(secondComma+1)};
-      drawLine(int(point1[0]),int(point1[1]),int(point2[0]),int(point2[1]));
+      drawLine(point1[0].toInt(),point1[1].toInt(),point2[0].toInt(),point2[1].toInt());
       Serial.println("Finish");
       
     }
@@ -90,6 +91,15 @@ void serialEvent() {
       Serial.println("Accepted");
       Serial.println("Start");
       // Parse data and send to drawArc()
+      int firstSpace = incomingCommand.indexOf(" ");
+      int secondSpace = incomingCommand.indexOf(" ",firstSpace+1);
+      int thirdSpace = incomingCommand.indexOf(" ",secondSpace+1);
+      int fourthSpace = incomingCommand.indexOf(" ",thirdSpace+1);
+      int comma = incomingCommand.indexOf(",");
+      int point[] = {incomingCommand.substring(firstSpace+1,comma).toInt(),incomingCommand.substring(comma+1,secondSpace).toInt()};
+      int radius = incomingCommand.substring(secondSpace+1,thirdSpace).toInt();
+      int angles[] = {incomingCommand.substring(thirdSpace+1,fourthSpace).toInt(),incomingCommand.substring(fourthSpace+1).toInt()};
+      drawCircle(point[0],point[1]);
       Serial.println("Finish");
     }
     else{
@@ -146,35 +156,7 @@ void drawArc(double centerX, double centerY, double radius, double startAngle, d
 
 }
 
-void drawCorners() {
-  elevator.moveTo(ELEVATOR_UP);
-  elevatorRun();
 
-  goTo(300, 300);
-  elevator.moveTo(ELEVATOR_DOWN);
-  elevatorRun();
-  elevator.moveTo(ELEVATOR_UP);
-  elevatorRun();
-
-
-  goTo(300, 0);
-  elevator.moveTo(ELEVATOR_DOWN);
-  elevatorRun();
-  elevator.moveTo(ELEVATOR_UP);
-  elevatorRun();
-
-  goTo(0, 300);
-  elevator.moveTo(ELEVATOR_DOWN);
-  elevatorRun();
-  elevator.moveTo(ELEVATOR_UP);
-  elevatorRun();
-
-  goTo(0, 0);
-  elevator.moveTo(ELEVATOR_DOWN);
-  elevatorRun();
-  elevator.moveTo(ELEVATOR_UP);
-  elevatorRun();
-}
 
 //D1 = angle between x-axis and hypotenuse
 
@@ -224,7 +206,6 @@ void offset() {
   elevator.setCurrentPosition(0);
   currentX = 0.0;
   currentY = a + b;
-  Serial.print("Offset Done");
 }
 
 void goTo(double x, double y) {
@@ -292,7 +273,7 @@ void drawLine(double startX, double startY, double endX, double endY) {
   elevator.moveTo(ELEVATOR_DOWN);
   elevatorRun();
   double slope = (endY - startY) / (endX - startX);
-  if (endX - startX != 0) { //to deal with vertical lines
+  if(endX-startX != 0) { //to deal with vertical lines
     if (endX > startX) {
       for (double i = 0; i <= endX - startX; i += LINE_STEP) {
         goTo(startX + i, startY + slope * i);
@@ -316,35 +297,39 @@ void drawLine(double startX, double startY, double endX, double endY) {
       }
     }
   }
+  elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
+}
+
+void drawArc(double centerX, double centerY, double radius, double startAngle, double endAngle) {
+  double startX = centerX + radius * cos(startAngle);
+  double startY = centerY + radius * sin(startAngle);
+
+  elevator.moveTo(ELEVATOR_UP);
+  elevatorRun();
+  goTo(startX, startY);
+  elevator.moveTo(ELEVATOR_DOWN);
+  elevatorRun();
+
+  double angle = endAngle - startAngle;
+
+  if (angle > 0) {
+
+    for (double i = startAngle; i <= endAngle; i += ARC_STEP) {
+      goTo(radius * cos(i) + centerX, radius * sin(i) + centerY);
+    }
+  }
+  else {
+    for (double i = startAngle; i >= endAngle; i -= ARC_STEP) {
+      goTo(radius * cos(i) + centerX, radius * sin(i) + centerY);
+    }
+  }
 }
 
 void elevatorRun() {
   while (abs(elevator.distanceToGo()) > 0) {
     elevator.run();
   }
-  delay(500);
-}
-
-//Generates a coordinate lookup table based off of two corners of the table.
-//The coordinates fed in must be the positions of A1 and C3, in that order.
-//boolean generateTable(double x1, double y1, double x2, double y2) {
-//  double deltaX = (x2 - x1) / 3.0;
-//  double deltaY = (y2 - y1) / 3.0;
-//  for (int i = 0; i < NUM_ROWS; i++) { //Rows A, B, C
-//    for (int j = 0; j < NUM_COLUMNS; j++) { //Columns 1, 2, 3
-//      coords[6 * i + 2 * j] = x1 + deltaX * (double)(i);
-//      coords[6 * i + 2 * j + 1] = y1 + deltaY * (double)(j);
-//      Serial.println(coords[6 * i + 2 * j]);
-//      Serial.println(coords[6 * i + 2 * j + 1]);
-//    }
-//  }
-//}
-
-//draws an X at a given (x,y) coordinate
-
-void drawX(double x, double y) {
-  drawLine(x - HALF_X_WIDTH, y - HALF_X_WIDTH, x + HALF_X_WIDTH, y + HALF_X_WIDTH);
-  drawLine(x + HALF_X_WIDTH, y - HALF_X_WIDTH, x - HALF_X_WIDTH, y + HALF_X_WIDTH);
+  delay(100);
 }
 
 //draws circle at (x,y) with radius CIRCLE_RADIUS
@@ -363,4 +348,3 @@ void drawCircle(double x, double y) {
   elevator.moveTo(ELEVATOR_UP); //move up to avoid writing on board
   elevatorRun();
 }
-

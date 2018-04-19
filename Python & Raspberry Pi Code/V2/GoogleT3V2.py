@@ -23,6 +23,8 @@ import aiy.voicehat
 import time
 
 from TTTArmV2 import TTTGame
+from Arm import Arm
+from GRQDARMV2 import GRQDGame
 
 logging.basicConfig(
     level=logging.INFO,
@@ -35,7 +37,9 @@ def main():
     status_ui.status('starting')
     assistant = aiy.assistant.grpc.get_assistant()
     button = aiy.voicehat.get_button()
-    ttt = TTTGame(False)
+    arm = Arm('/dev/ttyACM0', False)
+    ttt = TTTGame(arm)
+    grqd = GRQDGame(arm)
     time.sleep(2)
     ttt.arm.ser.write('N\n'.encode())
     time.sleep(5)
@@ -55,11 +59,13 @@ def main():
                 # New game prompt:
                 if 'start a' in text and 'game' in text:
                     if 'tic tac toe' in text or 'TTT' in text or 'tic-tac-toe' in text:
-                        ttt = TTTGame(False)
+                        ttt = TTTGame(arm)
                         aiy.audio.say('Ok, starting a new tic tac toe game. Would you like to be X or O?')
                         game = 'ttt'
                     elif 'reverse google quick draw' in text or 'rgqd' in text:
-                        #aiy.audio.say('Ok, starting a new reverse google quick draw game')
+                        aiy.audio.say('Ok, starting a new RGQD game.')
+                        aiy.audio.say('his game reverses the role of Google Quick Draw.')
+                        aiy.audio.say('You have to decide which option the drawing best represents.')
                         game = 'rgqd'
                     else:
                         aiy.audio.say('Sorry, I dont support that game yet!')

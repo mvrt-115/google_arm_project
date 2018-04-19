@@ -54,6 +54,9 @@ class GRQDGame:
         print('You have 5 seconds to decide which option the drawing best represents.')
         print('Options: ')
         print(', '.join(GRQDGame.choices))
+        GRQDGame.generateCoordinates(self)
+        print(GRQDGame.xCoords)
+        print(GRQDGame.yCoords)
         answer = input('Which option is it?:\n')
         if GRQDGame.choices[int(answer)-1] == GRQDGame.item:
             print('You are correct!')
