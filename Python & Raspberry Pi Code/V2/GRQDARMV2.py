@@ -1,6 +1,7 @@
 # Tic Tac Toe class object with arm interactions
 import random
 import re
+import time
 
 from Arm import Arm
 
@@ -12,14 +13,15 @@ class GRQDGame:
         GRQDGame.yCoords = list()
         Arm = arm
 
-    def drawObject(self, lines): # Comment out testing when connected to arm
+    def drawObject(self):
         # Send the array of lines to be drawn
+        for i in range(0,len(GRQDGame.xCoords)):
+            arm.aWrite('U')
+            for j in range(1,len(GRQDGame.xCoords[i])):
+                message = ('L '+str(GRQDGame.xCoords[i][j-1])+','+str(GRQDGame.yCoords[i][j-1])+' '+str(GRQDGame.xCoords[i][j])+','+str(GRQDGame.yCoords[i][j])+'\n')
+                arm.aWrite(message)
+            arm.aWrite('U')
         return True # Testing
-
-    def close(self):
-            # Closes the serial port.
-            GRQDGame.Arm.ser.close()
-            print('Serial port closed')
     
     def chooseObjects(self):
         with open('categories.txt') as f:
@@ -57,12 +59,16 @@ class GRQDGame:
         GRQDGame.generateCoordinates(self)
         print(GRQDGame.xCoords)
         print(GRQDGame.yCoords)
+        GRQDGame.drawObject(self)
         answer = input('Which option is it?:\n')
         if GRQDGame.choices[int(answer)-1] == GRQDGame.item:
             print('You are correct!')
         else: print('Sorry the correct answer is:'+GRQDGame.item)
 
 if __name__ == '__main__':
-    arm = Arm('/dev/ttyACM0', True)
+    arm = Arm('COM6', False)
+    time.sleep(2)
+    arm.aWrite('N')
     g = GRQDGame(arm)
-    g.play()
+    while True:
+        g.play()

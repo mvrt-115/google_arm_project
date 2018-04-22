@@ -10,6 +10,10 @@ class Arm:
         print('Starting Arm')
         Arm.t = testing
 
+    def aWrite(self, message): # Comment out testing when connected to arm
+        Arm.ser.write(message.encode())
+        Arm.wait(self)
+
     def drawLetter(self, letter, move): # Comment out testing when connected to arm
         xCoords = [0, 50, 150, 250, 50, 150, 250, 50, 150, 250]
         yCoords = [0, 50, 50, 50, 150, 150, 150, 250, 250, 250]
@@ -18,16 +22,22 @@ class Arm:
             stroke1 = ('L '+str(xCoords[move]-25)+','+str(yCoords[move]-25)+' '+str(xCoords[move]+25)+','+str(yCoords[move]+25)+'\n')
             stroke2 = ('L '+str(xCoords[move]-25)+','+str(yCoords[move]+25)+' '+str(xCoords[move]+25)+','+str(yCoords[move]-25)+'\n')
             if not Arm.t:
+                Arm.ser.write(b'U')
+                Arm.wait(self)
                 Arm.ser.write(stroke1.encode())
-                wait()
+                Arm.wait(self)
+                Arm.ser.write(b'U')
+                Arm.wait(self)
                 Arm.ser.write(stroke2.encode())
-                wait()
+                Arm.wait(self)
+                Arm.ser.write(b'U')
+                Arm.wait(self)
         else:
             # Draw O
             stroke = ('A '+str(xCoords[move])+','+str(yCoords[move])+' 25 '+'0 '+'360'+'\n')
             if not Arm.t:
                 Arm.ser.write(stroke.encode())
-                wait()
+                Arm.wait(self)
         return True # Testing
 
     def drawBoard(self): # Comment out testing when connected to arm
@@ -43,8 +53,14 @@ class Arm:
         return True # Testing
 
     def wait(self):
-        while Arm.ser.readline() != 'Finish' or Arm.ser.readline() != 'Invalid':
-            pass
+        incoming = Arm.ser.readline()
+        while True:
+            # print(incoming)
+            if incoming == b'Finish\r\n' or incoming == b'Invalid\r\n':
+                break
+            # print('Waiting')
+            incoming = Arm.ser.readline()
+        # print('Done')
 
     def close(self):
         # Closes the serial port.

@@ -40,6 +40,7 @@ def main():
     arm = Arm('/dev/ttyACM0', False)
     ttt = TTTGame(arm)
     grqd = GRQDGame(arm)
+    guesses = 4
     time.sleep(2)
     ttt.arm.ser.write('N\n'.encode())
     time.sleep(5)
@@ -65,7 +66,10 @@ def main():
                     elif 'reverse google quick draw' in text or 'rgqd' in text:
                         aiy.audio.say('Ok, starting a new RGQD game.')
                         aiy.audio.say('his game reverses the role of Google Quick Draw.')
-                        aiy.audio.say('You have to decide which option the drawing best represents.')
+                        aiy.audio.say('You have to decide which object the drawing best represents.')
+                        GRQDGame.chooseObjects()
+                        aiy,audio.say('Is it a ' + GRQDGame.choices[0] + ', a ' + GRQDGame.choices[1] + ', a ' + GRQDGame.choices[2] + ', or a ' + GRQDGame.choices[3] + '.')
+                        GRQDGame.drawObject()
                         game = 'rgqd'
                     else:
                         aiy.audio.say('Sorry, I dont support that game yet!')
@@ -140,7 +144,18 @@ def main():
                             game = 'none'
                             audio = False
                         
-                        
+                elif game == 'rgqd':
+                    if text == GRQDGame.item
+                        aiy.audio.say('Correct!')
+                        game == 'none':
+                    else:
+                        guesses = guesses - 1
+                        if guesses == 0:
+                            aiy.audio.say('Sorry, thats not correct. The object was a ' + GRQDGame.item + '.')
+                            game == 'none'
+                            guesses = 4
+                        else:
+                            aiy.audio.say('Sorry, thats not correct. You have ' + str(guesses) + ' left.')
                 # Exit prompt:
                 elif text == 'goodbye':
                     status_ui.status('stopping')
