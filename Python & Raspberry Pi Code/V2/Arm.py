@@ -47,9 +47,13 @@ class Arm:
         stroke4 = ('L 0,200 300,200\n')
         if not Arm.t:
             Arm.ser.write(stroke1.encode())
+            Arm.wait(self)
             Arm.ser.write(stroke2.encode())
+            Arm.wait(self)
             Arm.ser.write(stroke3.encode())
+            Arm.wait(self)
             Arm.ser.write(stroke4.encode())
+            Arm.wait(self)
         return True # Testing
 
     def wait(self):

@@ -6,21 +6,22 @@ import time
 from Arm import Arm
 
 class GRQDGame:
-    def __init__(self, arm):
+    def __init__(self, armA):
         GRQDGame.choices = list()
         GRQDGame.item = 'Andy'
         GRQDGame.xCoords = list()
         GRQDGame.yCoords = list()
-        Arm = arm
+        GRQDGame.arm = armA
 
-    def drawObject(self):
+    def drawObject(self, XCoords, YCoords):
+        print('drawing')
         # Send the array of lines to be drawn
-        for i in range(0,len(GRQDGame.xCoords)):
-            arm.aWrite('U')
-            for j in range(1,len(GRQDGame.xCoords[i])):
-                message = ('L '+str(GRQDGame.xCoords[i][j-1])+','+str(GRQDGame.yCoords[i][j-1])+' '+str(GRQDGame.xCoords[i][j])+','+str(GRQDGame.yCoords[i][j])+'\n')
-                arm.aWrite(message)
-            arm.aWrite('U')
+        for i in range(0,len(XCoords)):
+            GRQDGame.arm.aWrite('U')
+            for j in range(1,len(XCoords[i])):
+                message = ('L '+str(XCoords[i][j-1])+','+str(YCoords[i][j-1])+' '+str(XCoords[i][j])+','+str(YCoords[i][j])+'\n')
+                GRQDGame.arm.aWrite(message)
+            GRQDGame.arm.aWrite('U')
         return True # Testing
     
     def chooseObjects(self):
@@ -59,14 +60,14 @@ class GRQDGame:
         GRQDGame.generateCoordinates(self)
         print(GRQDGame.xCoords)
         print(GRQDGame.yCoords)
-        GRQDGame.drawObject(self)
+        GRQDGame.drawObject(self, GRQDGame.xCoords, GRQDGame.yCoords)
         answer = input('Which option is it?:\n')
         if GRQDGame.choices[int(answer)-1] == GRQDGame.item:
             print('You are correct!')
         else: print('Sorry the correct answer is:'+GRQDGame.item)
 
 if __name__ == '__main__':
-    arm = Arm('COM6', False)
+    arm = Arm('/dev/ttyACM0', False)
     time.sleep(2)
     arm.aWrite('N')
     g = GRQDGame(arm)

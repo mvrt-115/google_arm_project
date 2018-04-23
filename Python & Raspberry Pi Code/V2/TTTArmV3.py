@@ -73,7 +73,7 @@ class TTTGame:
         # Makes a move on the board with the player letter at input position.
         if self.board.makeMove(self.playerLetter, move):
             print('Ok: ' + str(self.playerLetter) + ' can be placed at ' + str(move))
-            self.arm.drawLetter(self.arm, self.playerLetter,move)
+            self.arm.drawLetter(self.playerLetter, move)
             # Checks for winners. If so, sends the signal to draws the win line.
             if self.board.isWinner(self.playerLetter) > 0:
                 return str(self.playerLetter) + 'W' # Player Won
@@ -83,7 +83,7 @@ class TTTGame:
             print('Making Comp Move') # Testing
             compMove = self.getComputerMove()
             self.board.makeMove(self.computerLetter, compMove) # Calculate next move and place
-            self.arm.drawLetter(self.arm, self.computerLetter, compMove)
+            self.arm.drawLetter(self.computerLetter, compMove)
             if self.board.isWinner(self.computerLetter) > 0:
                 return str(self.computerLetter) + 'W' # Computer Won
             elif self.board.isBoardFull():
@@ -105,7 +105,7 @@ class TTTGame:
             print('Making Comp Move') # Testing
             compMove = self.getComputerMove()
             self.board.makeMove(self.computerLetter, compMove) # Calculate next move and place
-            self.arm.drawLetter(self.arm, self.computerLetter, compMove)
+            self.arm.drawLetter(self.computerLetter, compMove)
         self.setLetter = True
         return 'Set'
     
