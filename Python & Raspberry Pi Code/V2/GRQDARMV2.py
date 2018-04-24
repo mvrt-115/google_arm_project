@@ -67,7 +67,7 @@ class GRQDGame:
         else: print('Sorry the correct answer is:'+GRQDGame.item)
 
 if __name__ == '__main__':
-    arm = Arm('/dev/ttyACM0', False)
+    arm = Arm('COM6', False)
     time.sleep(2)
     arm.aWrite('N')
     g = GRQDGame(arm)
