@@ -6,7 +6,7 @@
 #define BAUD_RATE 115200
 
 #define ARM_STEPS 6400 //steps per rotation for joint 1 and joint 2 stepper motors
-#define JOINT_1_ACCELERATION 10000 //Acceleration is in steps/s^2 
+#define JOINT_1_ACCELERATION 500 //Acceleration is in steps/s^2 
 #define JOINT_1_MAX_SPEED 8000
 
 #define JOINT_2_GEAR_REDUCTION 1.636
@@ -14,10 +14,10 @@
 #define JOINT_2_MAX_SPEED JOINT_1_MAX_SPEED*JOINT_2_GEAR_REDUCTION
 
 #define ELEVATOR_STEPS 3200 //steps per rotation for elevator stepper motors
-#define ELEVATOR_ACCELERATION 1600
+#define ELEVATOR_ACCELERATION 5000
 #define ELEVATOR_MAX_SPEED 8000
 
-#define ARM_SPEED 1000
+#define LINE_ACCEL 100000
 
 #define ELEVATOR_UP 300
 #define ELEVATOR_DOWN -500
@@ -27,7 +27,7 @@
 #define ELEVATOR_OFFSET -15000 //in steps //-16000
 
 #define PRECISION 100 //higher precision = lower speed
-#define LINE_STEP 3
+#define LINE_STEP 1
 #define ARC_STEP .5
 
 AccelStepper joint1(1, 4, 3); // 1, stp, dir
@@ -213,34 +213,23 @@ void goTo(double x, double y, boolean fast) {
     joint2.moveTo(joint2move);
   }
 
-  //  if (!fast) runLoop();
-  //  else {
-  //    if (joint1.targetPosition() >= joint1.currentPosition())
-  //      joint1.setSpeed(ARM_SPEED);
-  //    else
-  //      joint1.setSpeed(-ARM_SPEED);
-  //    if (joint2.targetPosition() >= joint2.currentPosition())
-  //      joint2.setSpeed(ARM_SPEED);
-  //    else
-  //      joint2.setSpeed(-ARM_SPEED);
-  //    while (abs(joint1.distanceToGo()) > 0 || abs(joint2.distanceToGo()) > 0) {
-  //      joint1.run();
-  //      joint2.run();
-  //    }
-  //  }
-
-  runLoop();
+  runLoop(fast);
 
   currentX = x;
   currentY = y;
 }
 
-void runLoop() {
+void runLoop(boolean fast) {
+  if (fast)
+    joint1.setAcceleration(LINE_ACCEL);
+    joint2.setAcceleration(LINE_ACCEL);
   while (abs(joint1.distanceToGo()) > 0 || abs(joint2.distanceToGo()) > 0 || abs(elevator.distanceToGo()) > 0) {
     joint1.run();
     joint2.run();
     elevator.run();
   }
+  joint1.setAcceleration(JOINT_1_ACCELERATION);
+  joint2.setAcceleration(JOINT_2_ACCELERATION);
 }
 
 void elevatorRun() {
