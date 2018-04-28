@@ -196,7 +196,9 @@
                     "key": "TTT",
                     "synonyms": [
                         "Tic Tac Toe",
-                        "TTT"
+                        "tic tac toe",
+                        "TTT",
+                        "ttt"
                     ]
                 },
                 {
@@ -205,7 +207,11 @@
                         "RGQD",
                         "Quick Draw",
                         "Reverse Google Quick Draw",
-                        "Google Quick Draw"
+                        "Google Quick Draw",
+                        "rgqd",
+                        "quick draw",
+                        "reverse google quick draw",
+                        "google quick draw"
                     ]
                 }
             ]
@@ -216,15 +222,15 @@
                 {
                     "key": "X",
                     "synonyms": [
-                        "Ex",
-                        "X"
+                        "x",
+                        "ex"
                     ]
                 },
                 {
                     "key": "O",
                     "synonyms": [
-                        "O",
-                        "Oh"
+                        "o",
+                        "oh"
                     ]
                 }
             ]
@@ -236,74 +242,75 @@
                     "key": "1",
                     "synonyms": [
                         "1",
-                        "One",
-                        "Top Left"
+                        "one",
+                        "top left"
                     ]
                 },
                 {
                     "key": "2",
                     "synonyms": [
                         "2",
-                        "Two",
-                        "Top Middle",
-                        "Too",
-                        "To"
+                        "two",
+                        "top middle",
+                        "too",
+                        "to"
                     ]
                 },
                 {
                     "key": "3",
                     "synonyms": [
                         "3",
-                        "Three",
-                        "Top Right"
+                        "three",
+                        "top right"
                     ]
                 },
                 {
                     "key": "4",
                     "synonyms": [
                         "4",
-                        "Four",
-                        "Middle Left"
+                        "four",
+                        "for",
+                        "middle left"
                     ]
                 },
                 {
                     "key": "5",
                     "synonyms": [
                         "5",
-                        "Five",
-                        "Middle"
+                        "five",
+                        "middle"
                     ]
                 },
                 {
                     "key": "6",
                     "synonyms": [
                         "6",
-                        "Six",
-                        "Middle Right"
+                        "six",
+                        "middle right"
                     ]
                 },
                 {
                     "key": "7",
                     "synonyms": [
                         "7",
-                        "Seven",
-                        "Bottom Left"
+                        "seven",
+                        "bottom left"
                     ]
                 },
                 {
                     "key": "8",
                     "synonyms": [
                         "8",
-                        "Eight",
-                        "Bottom Middle"
+                        "eight",
+                        "bottom middle"
                     ]
                 },
                 {
                     "key": "9",
                     "synonyms": [
                         "9",
-                        "Nine",
-                        "Bottom Right"
+                        "nine",
+                        "bottom right"
                     ]
                 }
             ]

@@ -69,6 +69,20 @@ class TTTGame:
         self.arm = arm
         self.setLetter = False
 
+    def drawBoard(self):
+        stroke1 = ('L 100,0 100,300\n')
+        stroke2 = ('L 200,0 200,300\n')
+        stroke3 = ('L 0,100 300,100\n')
+        stroke4 = ('L 0,200 300,200\n')
+        self.arm.aWrite(stroke1)
+        self.arm.aWrite('U')
+        self.arm.aWrite(stroke2)
+        self.arm.aWrite('U')
+        self.arm.aWrite(stroke3)
+        self.arm.aWrite('U')
+        self.arm.aWrite(stroke4)
+        self.arm.aWrite('U')
+
     def makeMove(self, move):
         # Makes a move on the board with the player letter at input position.
         if self.board.makeMove(self.playerLetter, move):

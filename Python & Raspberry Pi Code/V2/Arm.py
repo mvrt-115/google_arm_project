@@ -40,22 +40,6 @@ class Arm:
                 Arm.wait(self)
         return True # Testing
 
-    def drawBoard(self): # Comment out testing when connected to arm
-        stroke1 = ('L 100,0 100,300\n')
-        stroke2 = ('L 200,0 200,300\n')
-        stroke3 = ('L 0,100 300,100\n')
-        stroke4 = ('L 0,200 300,200\n')
-        if not Arm.t:
-            Arm.ser.write(stroke1.encode())
-            Arm.wait(self)
-            Arm.ser.write(stroke2.encode())
-            Arm.wait(self)
-            Arm.ser.write(stroke3.encode())
-            Arm.wait(self)
-            Arm.ser.write(stroke4.encode())
-            Arm.wait(self)
-        return True # Testing
-
     def wait(self):
         incoming = Arm.ser.readline()
         while True:

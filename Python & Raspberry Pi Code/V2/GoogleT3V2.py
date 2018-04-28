@@ -61,7 +61,7 @@ def main():
                     if 'tic tac toe' in text or 'TTT' in text or 'tic-tac-toe' in text:
                         ttt = TTTGame(arm)
                         aiy.audio.say('Ok, starting a new tic tac toe game. Would you like to be X or O?')
-                        ttt.arm.drawBoard()
+                        ttt.drawBoard()
                         game = 'ttt'
                     elif 'reverse Google Quick Draw' in text or 'rgqd' in text:
                         aiy.audio.say('Ok, starting a new reverse Google Quick Draw game.')
@@ -96,31 +96,31 @@ def main():
                     # Choose position:
                     elif 'move to' in text or 'position' in text:
                         moveResult = 'none'
-                        if '1' in text:
+                        if '1' in text or 'one' in text:
                             aiy.audio.say('Ok, moving to position 1')
                             moveResult = ttt.makeMove(1)
                         elif '2' in text or 'position to' in text:
                             aiy.audio.say('Ok, moving to position 2')
                             moveResult = ttt.makeMove(2)
-                        elif '3' in text:
+                        elif '3' in text or 'three' in text:
                             aiy.audio.say('Ok, moving to position 3')
                             moveResult = ttt.makeMove(3)
-                        elif '4' in text:
+                        elif '4' in text or 'four' in text:
                             aiy.audio.say('Ok, moving to position 4')
                             moveResult = ttt.makeMove(4)
-                        elif '5' in text:
+                        elif '5' in text or 'five' in text:
                             aiy.audio.say('Ok, moving to position 5')
                             moveResult = ttt.makeMove(5)
-                        elif '6' in text:
+                        elif '6' in text or 'six' in text:
                             aiy.audio.say('Ok, moving to position 6')
                             moveResult = ttt.makeMove(6)
                         elif '7' in text or 'seven' in text:
                             aiy.audio.say('Ok, moving to position 7')
                             moveResult = ttt.makeMove(7)
-                        elif '8' in text:
+                        elif '8' in text or 'eight' in text:
                             aiy.audio.say('Ok, moving to position 8')
                             moveResult = ttt.makeMove(8)
-                        elif '9' in text:
+                        elif '9' in text or 'nine' in text:
                             aiy.audio.say('Ok, moving to position 9')
                             moveResult = ttt.makeMove(9)
                         else:
