@@ -146,7 +146,7 @@ def main():
                             audio = False
                         audio = False
                 elif game == 'rgqd':
-                    if text == grqd.item:
+                    if grqd.item in text:
                         aiy.audio.say('Correct!')
                         game == 'none'
                     else:

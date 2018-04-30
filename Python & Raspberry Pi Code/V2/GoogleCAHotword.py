@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+##!/usr/bin/env python
 
 # Copyright (C) 2017 Google Inc.
 #
@@ -112,10 +112,8 @@ def process_event(event, device_id):
                 letter = params["XorO"]
                 if game == "ttt":
                     if letter == "X":
-                        play_audio("Ok, setting your letter to X. You will go first")
                         ttt.setPLetter(1)
                     elif letter == "O":
-                        play_audio("Ok, setting your letter to O. The arm will go first")
                         ttt.setPLetter(2)
                     
             
@@ -139,7 +137,7 @@ def process_event(event, device_id):
                         game = "none"
             
             if command == "com.acme.commands.guess_object":
-                if game = "grqd":
+                if game == "grqd":
                     item = params['object']
                     if item == grqd.item:
                         play_audio("You are correct! Thank you for playing!")
