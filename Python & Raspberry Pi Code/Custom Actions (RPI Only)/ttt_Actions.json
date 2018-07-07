@@ -114,7 +114,7 @@
                 ],
                 "trigger": {
                     "queryPatterns": [
-                        "Move to (position)? $Position:pos"
+                        "Move to (the)? (position)? $Position:pos"
                     ]
                 }
             },

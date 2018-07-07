@@ -1,0 +1,2399 @@
+{
+    "manifest": {
+        "displayName": "MVRTxGoogle Arm",
+        "invocationName": "Arm",
+        "category": "PRODUCTIVITY"
+    },
+    "actions": [
+        {
+            "name": "com.acme.actions.start_game",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.acme.actions.start_game",
+                "parameters": [
+                    {
+                        "name": "game",
+                        "type": "GameType"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [
+                        "Start a new $GameType:game Game"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok. Starting a new $game.raw game."
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.acme.commands.start_game",
+                                    "params": {
+                                        "game": "$game"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "com.acme.actions.set_letter",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.acme.actions.set_letter",
+                "parameters": [
+                    {
+                        "name": "XorO",
+                        "type": "Letter"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [
+                        "Set my letter (to)? $Letter:XorO"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok. setting letter to $XorO .. X will go first."
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.acme.commands.set_letter",
+                                    "params": {
+                                        "letter": "$XorO"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "com.acme.actions.choose_position",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.acme.actions.choose_position",
+                "parameters": [
+                    {
+                        "name": "pos",
+                        "type": "Position"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [
+                        "Move to (the)? (position)? $Position:pos"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok, Placing piece at position $pos.raw ."
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.acme.actions.choose_position",
+                                    "params": {
+                                        "position": "$pos"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "com.acme.actions.guess_object",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.acme.actions.guess_object",
+                "parameters": [
+                    {
+                        "name": "object",
+                        "type":"Objects"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [
+                        "Is the object a $Objects:object",
+                        "Is the object an $Objects:object",
+                        "Is it a $Objects:object",
+                        "Is it an $Objects:object"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok."
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.acme.commands.guess_object",
+                                    "params": {
+                                        "object": "$object"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ],
+    "types": [
+        {
+            "name": "$GameType",
+            "entities": [
+                {
+                    "key": "TTT",
+                    "synonyms": [
+                        "Tic Tac Toe",
+                        "tic-tac-toe",
+                        "tic tac toe",
+                        "TTT",
+                        "ttt"
+                    ]
+                },
+                {
+                    "key": "RGQD",
+                    "synonyms": [
+                        "RGQD",
+                        "Quick Draw",
+                        "Reverse Google Quick Draw",
+                        "Google Quick Draw",
+                        "rgqd",
+                        "quick draw",
+                        "reverse google quick draw",
+                        "google quick draw"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "$Letter",
+            "entities": [
+                {
+                    "key": "X",
+                    "synonyms": [
+                        "x",
+                        "ex"
+                    ]
+                },
+                {
+                    "key": "O",
+                    "synonyms": [
+                        "o",
+                        "oh",
+                        "200"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "$Position",
+            "entities": [
+                {
+                    "key": "1",
+                    "synonyms": [
+                        "1",
+                        "one",
+                        "top left",
+			"juan"
+                    ]
+                },
+                {
+                    "key": "2",
+                    "synonyms": [
+                        "2",
+                        "two",
+                        "top middle",
+                        "too",
+                        "to"
+                    ]
+                },
+                {
+                    "key": "3",
+                    "synonyms": [
+                        "3",
+                        "three",
+                        "top right"
+                    ]
+                },
+                {
+                    "key": "4",
+                    "synonyms": [
+                        "4",
+                        "four",
+                        "for",
+                        "middle left"
+                    ]
+                },
+                {
+                    "key": "5",
+                    "synonyms": [
+                        "5",
+                        "five",
+                        "middle"
+                    ]
+                },
+                {
+                    "key": "6",
+                    "synonyms": [
+                        "6",
+                        "six",
+                        "middle right"
+                    ]
+                },
+                {
+                    "key": "7",
+                    "synonyms": [
+                        "7",
+                        "seven",
+                        "bottom left"
+                    ]
+                },
+                {
+                    "key": "8",
+                    "synonyms": [
+                        "8",
+                        "eight",
+                        "bottom middle"
+                    ]
+                },
+                {
+                    "key": "9",
+                    "synonyms": [
+                        "9",
+                        "nine",
+                        "bottom right"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "$Objects",
+            "entities": [
+                {
+                    "key": "aircraft carrier",
+                    "synonyms": [
+                        "aircraft carrier"
+                    ]
+                },
+                {
+                    "key": "airplane",
+                    "synonyms": [
+                        "airplane"
+                    ]
+                },
+                {
+                    "key": "alarm clock",
+                    "synonyms": [
+                        "alarm clock"
+                    ]
+                },
+                {
+                    "key": "ambulance",
+                    "synonyms": [
+                        "ambulance"
+                    ]
+                },
+                {
+                    "key": "angel",
+                    "synonyms": [
+                        "angel"
+                    ]
+                },
+                {
+                    "key": "animal migration",
+                    "synonyms": [
+                        "animal migration"
+                    ]
+                },
+                {
+                    "key": "ant",
+                    "synonyms": [
+                        "ant"
+                    ]
+                },
+                {
+                    "key": "anvil",
+                    "synonyms": [
+                        "anvil"
+                    ]
+                },
+                {
+                    "key": "apple",
+                    "synonyms": [
+                        "apple"
+                    ]
+                },
+                {
+                    "key": "arm",
+                    "synonyms": [
+                        "arm"
+                    ]
+                },
+                {
+                    "key": "asparagus",
+                    "synonyms": [
+                        "asparagus"
+                    ]
+                },
+                {
+                    "key": "axe",
+                    "synonyms": [
+                        "axe"
+                    ]
+                },
+                {
+                    "key": "backpack",
+                    "synonyms": [
+                        "backpack"
+                    ]
+                },
+                {
+                    "key": "banana",
+                    "synonyms": [
+                        "banana"
+                    ]
+                },
+                {
+                    "key": "bandage",
+                    "synonyms": [
+                        "bandage"
+                    ]
+                },
+                {
+                    "key": "barn",
+                    "synonyms": [
+                        "barn"
+                    ]
+                },
+                {
+                    "key": "baseball",
+                    "synonyms": [
+                        "baseball"
+                    ]
+                },
+                {
+                    "key": "baseball bat",
+                    "synonyms": [
+                        "baseball bat"
+                    ]
+                },
+                {
+                    "key": "basket",
+                    "synonyms": [
+                        "basket"
+                    ]
+                },
+                {
+                    "key": "basketball",
+                    "synonyms": [
+                        "basketball"
+                    ]
+                },
+                {
+                    "key": "bat",
+                    "synonyms": [
+                        "bat"
+                    ]
+                },
+                {
+                    "key": "bathtub",
+                    "synonyms": [
+                        "bathtub"
+                    ]
+                },
+                {
+                    "key": "beach",
+                    "synonyms": [
+                        "beach"
+                    ]
+                },
+                {
+                    "key": "bear",
+                    "synonyms": [
+                        "bear"
+                    ]
+                },
+                {
+                    "key": "beard",
+                    "synonyms": [
+                        "beard"
+                    ]
+                },
+                {
+                    "key": "bed",
+                    "synonyms": [
+                        "bed"
+                    ]
+                },
+                {
+                    "key": "bee",
+                    "synonyms": [
+                        "bee"
+                    ]
+                },
+                {
+                    "key": "belt",
+                    "synonyms": [
+                        "belt"
+                    ]
+                },
+                {
+                    "key": "bench",
+                    "synonyms": [
+                        "bench"
+                    ]
+                },
+                {
+                    "key": "bicycle",
+                    "synonyms": [
+                        "bicycle"
+                    ]
+                },
+                {
+                    "key": "binoculars",
+                    "synonyms": [
+                        "binoculars"
+                    ]
+                },
+                {
+                    "key": "bird",
+                    "synonyms": [
+                        "bird"
+                    ]
+                },
+                {
+                    "key": "birthday cake",
+                    "synonyms": [
+                        "birthday cake"
+                    ]
+                },
+                {
+                    "key": "blackberry",
+                    "synonyms": [
+                        "blackberry"
+                    ]
+                },
+                {
+                    "key": "blueberry",
+                    "synonyms": [
+                        "blueberry"
+                    ]
+                },
+                {
+                    "key": "book",
+                    "synonyms": [
+                        "book"
+                    ]
+                },
+                {
+                    "key": "boomerang",
+                    "synonyms": [
+                        "boomerang"
+                    ]
+                },
+                {
+                    "key": "bottlecap",
+                    "synonyms": [
+                        "bottlecap"
+                    ]
+                },
+                {
+                    "key": "bowtie",
+                    "synonyms": [
+                        "bowtie"
+                    ]
+                },
+                {
+                    "key": "bracelet",
+                    "synonyms": [
+                        "bracelet"
+                    ]
+                },
+                {
+                    "key": "brain",
+                    "synonyms": [
+                        "brain"
+                    ]
+                },
+                {
+                    "key": "bread",
+                    "synonyms": [
+                        "bread"
+                    ]
+                },
+                {
+                    "key": "bridge",
+                    "synonyms": [
+                        "bridge"
+                    ]
+                },
+                {
+                    "key": "broccoli",
+                    "synonyms": [
+                        "broccoli"
+                    ]
+                },
+                {
+                    "key": "broom",
+                    "synonyms": [
+                        "broom"
+                    ]
+                },
+                {
+                    "key": "bucket",
+                    "synonyms": [
+                        "bucket"
+                    ]
+                },
+                {
+                    "key": "bulldozer",
+                    "synonyms": [
+                        "bulldozer"
+                    ]
+                },
+                {
+                    "key": "bus",
+                    "synonyms": [
+                        "bus"
+                    ]
+                },
+                {
+                    "key": "bush",
+                    "synonyms": [
+                        "bush"
+                    ]
+                },
+                {
+                    "key": "butterfly",
+                    "synonyms": [
+                        "butterfly"
+                    ]
+                },
+                {
+                    "key": "cactus",
+                    "synonyms": [
+                        "cactus"
+                    ]
+                },
+                {
+                    "key": "cake",
+                    "synonyms": [
+                        "cake"
+                    ]
+                },
+                {
+                    "key": "calculator",
+                    "synonyms": [
+                        "calculator"
+                    ]
+                },
+                {
+                    "key": "calendar",
+                    "synonyms": [
+                        "calendar"
+                    ]
+                },
+                {
+                    "key": "camel",
+                    "synonyms": [
+                        "camel"
+                    ]
+                },
+                {
+                    "key": "camera",
+                    "synonyms": [
+                        "camera"
+                    ]
+                },
+                {
+                    "key": "camouflage",
+                    "synonyms": [
+                        "camouflage"
+                    ]
+                },
+                {
+                    "key": "campfire",
+                    "synonyms": [
+                        "campfire"
+                    ]
+                },
+                {
+                    "key": "candle",
+                    "synonyms": [
+                        "candle"
+                    ]
+                },
+                {
+                    "key": "cannon",
+                    "synonyms": [
+                        "cannon"
+                    ]
+                },
+                {
+                    "key": "canoe",
+                    "synonyms": [
+                        "canoe"
+                    ]
+                },
+                {
+                    "key": "car",
+                    "synonyms": [
+                        "car"
+                    ]
+                },
+                {
+                    "key": "carrot",
+                    "synonyms": [
+                        "carrot"
+                    ]
+                },
+                {
+                    "key": "castle",
+                    "synonyms": [
+                        "castle"
+                    ]
+                },
+                {
+                    "key": "cat",
+                    "synonyms": [
+                        "cat"
+                    ]
+                },
+                {
+                    "key": "ceiling fan",
+                    "synonyms": [
+                        "ceiling fan"
+                    ]
+                },
+                {
+                    "key": "cello",
+                    "synonyms": [
+                        "cello"
+                    ]
+                },
+                {
+                    "key": "cell phone",
+                    "synonyms": [
+                        "cell phone"
+                    ]
+                },
+                {
+                    "key": "chair",
+                    "synonyms": [
+                        "chair"
+                    ]
+                },
+                {
+                    "key": "chandelier",
+                    "synonyms": [
+                        "chandelier"
+                    ]
+                },
+                {
+                    "key": "church",
+                    "synonyms": [
+                        "church"
+                    ]
+                },
+                {
+                    "key": "circle",
+                    "synonyms": [
+                        "circle"
+                    ]
+                },
+                {
+                    "key": "clarinet",
+                    "synonyms": [
+                        "clarinet"
+                    ]
+                },
+                {
+                    "key": "clock",
+                    "synonyms": [
+                        "clock"
+                    ]
+                },
+                {
+                    "key": "cloud",
+                    "synonyms": [
+                        "cloud"
+                    ]
+                },
+                {
+                    "key": "coffee cup",
+                    "synonyms": [
+                        "coffee cup"
+                    ]
+                },
+                {
+                    "key": "compass",
+                    "synonyms": [
+                        "compass"
+                    ]
+                },
+                {
+                    "key": "computer",
+                    "synonyms": [
+                        "computer"
+                    ]
+                },
+                {
+                    "key": "cookie",
+                    "synonyms": [
+                        "cookie"
+                    ]
+                },
+                {
+                    "key": "cooler",
+                    "synonyms": [
+                        "cooler"
+                    ]
+                },
+                {
+                    "key": "couch",
+                    "synonyms": [
+                        "couch"
+                    ]
+                },
+                {
+                    "key": "cow",
+                    "synonyms": [
+                        "cow"
+                    ]
+                },
+                {
+                    "key": "crab",
+                    "synonyms": [
+                        "crab"
+                    ]
+                },
+                {
+                    "key": "crayon",
+                    "synonyms": [
+                        "crayon"
+                    ]
+                },
+                {
+                    "key": "crocodile",
+                    "synonyms": [
+                        "crocodile"
+                    ]
+                },
+                {
+                    "key": "crown",
+                    "synonyms": [
+                        "crown"
+                    ]
+                },
+                {
+                    "key": "cruise ship",
+                    "synonyms": [
+                        "cruise ship"
+                    ]
+                },
+                {
+                    "key": "cup",
+                    "synonyms": [
+                        "cup"
+                    ]
+                },
+                {
+                    "key": "diamond",
+                    "synonyms": [
+                        "diamond"
+                    ]
+                },
+                {
+                    "key": "dishwasher",
+                    "synonyms": [
+                        "dishwasher"
+                    ]
+                },
+                {
+                    "key": "diving board",
+                    "synonyms": [
+                        "diving board"
+                    ]
+                },
+                {
+                    "key": "dog",
+                    "synonyms": [
+                        "dog"
+                    ]
+                },
+                {
+                    "key": "dolphin",
+                    "synonyms": [
+                        "dolphin"
+                    ]
+                },
+                {
+                    "key": "donut",
+                    "synonyms": [
+                        "donut"
+                    ]
+                },
+                {
+                    "key": "door",
+                    "synonyms": [
+                        "door"
+                    ]
+                },
+                {
+                    "key": "dragon",
+                    "synonyms": [
+                        "dragon"
+                    ]
+                },
+                {
+                    "key": "dresser",
+                    "synonyms": [
+                        "dresser"
+                    ]
+                },
+                {
+                    "key": "drill",
+                    "synonyms": [
+                        "drill"
+                    ]
+                },
+                {
+                    "key": "drums",
+                    "synonyms": [
+                        "drums"
+                    ]
+                },
+                {
+                    "key": "duck",
+                    "synonyms": [
+                        "duck"
+                    ]
+                },
+                {
+                    "key": "dumbbell",
+                    "synonyms": [
+                        "dumbbell"
+                    ]
+                },
+                {
+                    "key": "ear",
+                    "synonyms": [
+                        "ear"
+                    ]
+                },
+                {
+                    "key": "elbow",
+                    "synonyms": [
+                        "elbow"
+                    ]
+                },
+                {
+                    "key": "elephant",
+                    "synonyms": [
+                        "elephant"
+                    ]
+                },
+                {
+                    "key": "envelope",
+                    "synonyms": [
+                        "envelope"
+                    ]
+                },
+                {
+                    "key": "eraser",
+                    "synonyms": [
+                        "eraser"
+                    ]
+                },
+                {
+                    "key": "eye",
+                    "synonyms": [
+                        "eye"
+                    ]
+                },
+                {
+                    "key": "eyeglasses",
+                    "synonyms": [
+                        "eyeglasses"
+                    ]
+                },
+                {
+                    "key": "face",
+                    "synonyms": [
+                        "face"
+                    ]
+                },
+                {
+                    "key": "fan",
+                    "synonyms": [
+                        "fan"
+                    ]
+                },
+                {
+                    "key": "feather",
+                    "synonyms": [
+                        "feather"
+                    ]
+                },
+                {
+                    "key": "fence",
+                    "synonyms": [
+                        "fence"
+                    ]
+                },
+                {
+                    "key": "finger",
+                    "synonyms": [
+                        "finger"
+                    ]
+                },
+                {
+                    "key": "fire hydrant",
+                    "synonyms": [
+                        "fire hydrant"
+                    ]
+                },
+                {
+                    "key": "fireplace",
+                    "synonyms": [
+                        "fireplace"
+                    ]
+                },
+                {
+                    "key": "firetruck",
+                    "synonyms": [
+                        "firetruck"
+                    ]
+                },
+                {
+                    "key": "fish",
+                    "synonyms": [
+                        "fish"
+                    ]
+                },
+                {
+                    "key": "flamingo",
+                    "synonyms": [
+                        "flamingo"
+                    ]
+                },
+                {
+                    "key": "flashlight",
+                    "synonyms": [
+                        "flashlight"
+                    ]
+                },
+                {
+                    "key": "flip flops",
+                    "synonyms": [
+                        "flip flops"
+                    ]
+                },
+                {
+                    "key": "floor lamp",
+                    "synonyms": [
+                        "floor lamp"
+                    ]
+                },
+                {
+                    "key": "flower",
+                    "synonyms": [
+                        "flower"
+                    ]
+                },
+                {
+                    "key": "flying saucer",
+                    "synonyms": [
+                        "flying saucer"
+                    ]
+                },
+                {
+                    "key": "foot",
+                    "synonyms": [
+                        "foot"
+                    ]
+                },
+                {
+                    "key": "fork",
+                    "synonyms": [
+                        "fork"
+                    ]
+                },
+                {
+                    "key": "frog",
+                    "synonyms": [
+                        "frog"
+                    ]
+                },
+                {
+                    "key": "frying pan",
+                    "synonyms": [
+                        "frying pan"
+                    ]
+                },
+                {
+                    "key": "garden",
+                    "synonyms": [
+                        "garden"
+                    ]
+                },
+                {
+                    "key": "garden hose",
+                    "synonyms": [
+                        "garden hose"
+                    ]
+                },
+                {
+                    "key": "giraffe",
+                    "synonyms": [
+                        "giraffe"
+                    ]
+                },
+                {
+                    "key": "goatee",
+                    "synonyms": [
+                        "goatee"
+                    ]
+                },
+                {
+                    "key": "golf club",
+                    "synonyms": [
+                        "golf club"
+                    ]
+                },
+                {
+                    "key": "grapes",
+                    "synonyms": [
+                        "grapes"
+                    ]
+                },
+                {
+                    "key": "grass",
+                    "synonyms": [
+                        "grass"
+                    ]
+                },
+                {
+                    "key": "guitar",
+                    "synonyms": [
+                        "guitar"
+                    ]
+                },
+                {
+                    "key": "hamburger",
+                    "synonyms": [
+                        "hamburger"
+                    ]
+                },
+                {
+                    "key": "hammer",
+                    "synonyms": [
+                        "hammer"
+                    ]
+                },
+                {
+                    "key": "hand",
+                    "synonyms": [
+                        "hand"
+                    ]
+                },
+                {
+                    "key": "harp",
+                    "synonyms": [
+                        "harp"
+                    ]
+                },
+                {
+                    "key": "hat",
+                    "synonyms": [
+                        "hat"
+                    ]
+                },
+                {
+                    "key": "headphones",
+                    "synonyms": [
+                        "headphones"
+                    ]
+                },
+                {
+                    "key": "hedgehog",
+                    "synonyms": [
+                        "hedgehog"
+                    ]
+                },
+                {
+                    "key": "helicopter",
+                    "synonyms": [
+                        "helicopter"
+                    ]
+                },
+                {
+                    "key": "helmet",
+                    "synonyms": [
+                        "helmet"
+                    ]
+                },
+                {
+                    "key": "hexagon",
+                    "synonyms": [
+                        "hexagon"
+                    ]
+                },
+                {
+                    "key": "hockey puck",
+                    "synonyms": [
+                        "hockey puck"
+                    ]
+                },
+                {
+                    "key": "hockey stick",
+                    "synonyms": [
+                        "hockey stick"
+                    ]
+                },
+                {
+                    "key": "horse",
+                    "synonyms": [
+                        "horse"
+                    ]
+                },
+                {
+                    "key": "hospital",
+                    "synonyms": [
+                        "hospital"
+                    ]
+                },
+                {
+                    "key": "hot air balloon",
+                    "synonyms": [
+                        "hot air balloon"
+                    ]
+                },
+                {
+                    "key": "hot dog",
+                    "synonyms": [
+                        "hot dog"
+                    ]
+                },
+                {
+                    "key": "hot tub",
+                    "synonyms": [
+                        "hot tub"
+                    ]
+                },
+                {
+                    "key": "hourglass",
+                    "synonyms": [
+                        "hourglass"
+                    ]
+                },
+                {
+                    "key": "house",
+                    "synonyms": [
+                        "house"
+                    ]
+                },
+                {
+                    "key": "house plant",
+                    "synonyms": [
+                        "house plant"
+                    ]
+                },
+                {
+                    "key": "hurricane",
+                    "synonyms": [
+                        "hurricane"
+                    ]
+                },
+                {
+                    "key": "ice cream",
+                    "synonyms": [
+                        "ice cream"
+                    ]
+                },
+                {
+                    "key": "jacket",
+                    "synonyms": [
+                        "jacket"
+                    ]
+                },
+                {
+                    "key": "jail",
+                    "synonyms": [
+                        "jail"
+                    ]
+                },
+                {
+                    "key": "kangaroo",
+                    "synonyms": [
+                        "kangaroo"
+                    ]
+                },
+                {
+                    "key": "key",
+                    "synonyms": [
+                        "key"
+                    ]
+                },
+                {
+                    "key": "keyboard",
+                    "synonyms": [
+                        "keyboard"
+                    ]
+                },
+                {
+                    "key": "knee",
+                    "synonyms": [
+                        "knee"
+                    ]
+                },
+                {
+                    "key": "knife",
+                    "synonyms": [
+                        "knife"
+                    ]
+                },
+                {
+                    "key": "ladder",
+                    "synonyms": [
+                        "ladder"
+                    ]
+                },
+                {
+                    "key": "lantern",
+                    "synonyms": [
+                        "lantern"
+                    ]
+                },
+                {
+                    "key": "laptop",
+                    "synonyms": [
+                        "laptop"
+                    ]
+                },
+                {
+                    "key": "leaf",
+                    "synonyms": [
+                        "leaf"
+                    ]
+                },
+                {
+                    "key": "leg",
+                    "synonyms": [
+                        "leg"
+                    ]
+                },
+                {
+                    "key": "light bulb",
+                    "synonyms": [
+                        "light bulb"
+                    ]
+                },
+                {
+                    "key": "lighter",
+                    "synonyms": [
+                        "lighter"
+                    ]
+                },
+                {
+                    "key": "lighthouse",
+                    "synonyms": [
+                        "lighthouse"
+                    ]
+                },
+                {
+                    "key": "lightning",
+                    "synonyms": [
+                        "lightning"
+                    ]
+                },
+                {
+                    "key": "line",
+                    "synonyms": [
+                        "line"
+                    ]
+                },
+                {
+                    "key": "lion",
+                    "synonyms": [
+                        "lion"
+                    ]
+                },
+                {
+                    "key": "lipstick",
+                    "synonyms": [
+                        "lipstick"
+                    ]
+                },
+                {
+                    "key": "lobster",
+                    "synonyms": [
+                        "lobster"
+                    ]
+                },
+                {
+                    "key": "lollipop",
+                    "synonyms": [
+                        "lollipop"
+                    ]
+                },
+                {
+                    "key": "mailbox",
+                    "synonyms": [
+                        "mailbox"
+                    ]
+                },
+                {
+                    "key": "map",
+                    "synonyms": [
+                        "map"
+                    ]
+                },
+                {
+                    "key": "marker",
+                    "synonyms": [
+                        "marker"
+                    ]
+                },
+                {
+                    "key": "matches",
+                    "synonyms": [
+                        "matches"
+                    ]
+                },
+                {
+                    "key": "megaphone",
+                    "synonyms": [
+                        "megaphone"
+                    ]
+                },
+                {
+                    "key": "mermaid",
+                    "synonyms": [
+                        "mermaid"
+                    ]
+                },
+                {
+                    "key": "microphone",
+                    "synonyms": [
+                        "microphone"
+                    ]
+                },
+                {
+                    "key": "microwave",
+                    "synonyms": [
+                        "microwave"
+                    ]
+                },
+                {
+                    "key": "monkey",
+                    "synonyms": [
+                        "monkey"
+                    ]
+                },
+                {
+                    "key": "moon",
+                    "synonyms": [
+                        "moon"
+                    ]
+                },
+                {
+                    "key": "mosquito",
+                    "synonyms": [
+                        "mosquito"
+                    ]
+                },
+                {
+                    "key": "motorbike",
+                    "synonyms": [
+                        "motorbike"
+                    ]
+                },
+                {
+                    "key": "mountain",
+                    "synonyms": [
+                        "mountain"
+                    ]
+                },
+                {
+                    "key": "mouse",
+                    "synonyms": [
+                        "mouse"
+                    ]
+                },
+                {
+                    "key": "moustache",
+                    "synonyms": [
+                        "moustache"
+                    ]
+                },
+                {
+                    "key": "mouth",
+                    "synonyms": [
+                        "mouth"
+                    ]
+                },
+                {
+                    "key": "mug",
+                    "synonyms": [
+                        "mug"
+                    ]
+                },
+                {
+                    "key": "mushroom",
+                    "synonyms": [
+                        "mushroom"
+                    ]
+                },
+                {
+                    "key": "nail",
+                    "synonyms": [
+                        "nail"
+                    ]
+                },
+                {
+                    "key": "necklace",
+                    "synonyms": [
+                        "necklace"
+                    ]
+                },
+                {
+                    "key": "nose",
+                    "synonyms": [
+                        "nose"
+                    ]
+                },
+                {
+                    "key": "ocean",
+                    "synonyms": [
+                        "ocean"
+                    ]
+                },
+                {
+                    "key": "octagon",
+                    "synonyms": [
+                        "octagon"
+                    ]
+                },
+                {
+                    "key": "octopus",
+                    "synonyms": [
+                        "octopus"
+                    ]
+                },
+                {
+                    "key": "onion",
+                    "synonyms": [
+                        "onion"
+                    ]
+                },
+                {
+                    "key": "oven",
+                    "synonyms": [
+                        "oven"
+                    ]
+                },
+                {
+                    "key": "owl",
+                    "synonyms": [
+                        "owl"
+                    ]
+                },
+                {
+                    "key": "paintbrush",
+                    "synonyms": [
+                        "paintbrush"
+                    ]
+                },
+                {
+                    "key": "paint can",
+                    "synonyms": [
+                        "paint can"
+                    ]
+                },
+                {
+                    "key": "palm tree",
+                    "synonyms": [
+                        "palm tree"
+                    ]
+                },
+                {
+                    "key": "panda",
+                    "synonyms": [
+                        "panda"
+                    ]
+                },
+                {
+                    "key": "pants",
+                    "synonyms": [
+                        "pants"
+                    ]
+                },
+                {
+                    "key": "paper clip",
+                    "synonyms": [
+                        "paper clip"
+                    ]
+                },
+                {
+                    "key": "parachute",
+                    "synonyms": [
+                        "parachute"
+                    ]
+                },
+                {
+                    "key": "parrot",
+                    "synonyms": [
+                        "parrot"
+                    ]
+                },
+                {
+                    "key": "passport",
+                    "synonyms": [
+                        "passport"
+                    ]
+                },
+                {
+                    "key": "peanut",
+                    "synonyms": [
+                        "peanut"
+                    ]
+                },
+                {
+                    "key": "pear",
+                    "synonyms": [
+                        "pear"
+                    ]
+                },
+                {
+                    "key": "peas",
+                    "synonyms": [
+                        "peas"
+                    ]
+                },
+                {
+                    "key": "pencil",
+                    "synonyms": [
+                        "pencil"
+                    ]
+                },
+                {
+                    "key": "penguin",
+                    "synonyms": [
+                        "penguin"
+                    ]
+                },
+                {
+                    "key": "piano",
+                    "synonyms": [
+                        "piano"
+                    ]
+                },
+                {
+                    "key": "pickup truck",
+                    "synonyms": [
+                        "pickup truck"
+                    ]
+                },
+                {
+                    "key": "picture frame",
+                    "synonyms": [
+                        "picture frame"
+                    ]
+                },
+                {
+                    "key": "pig",
+                    "synonyms": [
+                        "pig"
+                    ]
+                },
+                {
+                    "key": "pillow",
+                    "synonyms": [
+                        "pillow"
+                    ]
+                },
+                {
+                    "key": "pineapple",
+                    "synonyms": [
+                        "pineapple"
+                    ]
+                },
+                {
+                    "key": "pizza",
+                    "synonyms": [
+                        "pizza"
+                    ]
+                },
+                {
+                    "key": "pliers",
+                    "synonyms": [
+                        "pliers"
+                    ]
+                },
+                {
+                    "key": "police car",
+                    "synonyms": [
+                        "police car"
+                    ]
+                },
+                {
+                    "key": "pond",
+                    "synonyms": [
+                        "pond"
+                    ]
+                },
+                {
+                    "key": "pool",
+                    "synonyms": [
+                        "pool"
+                    ]
+                },
+                {
+                    "key": "popsicle",
+                    "synonyms": [
+                        "popsicle"
+                    ]
+                },
+                {
+                    "key": "postcard",
+                    "synonyms": [
+                        "postcard"
+                    ]
+                },
+                {
+                    "key": "potato",
+                    "synonyms": [
+                        "potato"
+                    ]
+                },
+                {
+                    "key": "power outlet",
+                    "synonyms": [
+                        "power outlet"
+                    ]
+                },
+                {
+                    "key": "purse",
+                    "synonyms": [
+                        "purse"
+                    ]
+                },
+                {
+                    "key": "rabbit",
+                    "synonyms": [
+                        "rabbit"
+                    ]
+                },
+                {
+                    "key": "raccoon",
+                    "synonyms": [
+                        "raccoon"
+                    ]
+                },
+                {
+                    "key": "radio",
+                    "synonyms": [
+                        "radio"
+                    ]
+                },
+                {
+                    "key": "rain",
+                    "synonyms": [
+                        "rain"
+                    ]
+                },
+                {
+                    "key": "rainbow",
+                    "synonyms": [
+                        "rainbow"
+                    ]
+                },
+                {
+                    "key": "rake",
+                    "synonyms": [
+                        "rake"
+                    ]
+                },
+                {
+                    "key": "remote control",
+                    "synonyms": [
+                        "remote control"
+                    ]
+                },
+                {
+                    "key": "rhinoceros",
+                    "synonyms": [
+                        "rhinoceros"
+                    ]
+                },
+                {
+                    "key": "rifle",
+                    "synonyms": [
+                        "rifle"
+                    ]
+                },
+                {
+                    "key": "river",
+                    "synonyms": [
+                        "river"
+                    ]
+                },
+                {
+                    "key": "roller coaster",
+                    "synonyms": [
+                        "roller coaster"
+                    ]
+                },
+                {
+                    "key": "rollerskates",
+                    "synonyms": [
+                        "rollerskates"
+                    ]
+                },
+                {
+                    "key": "sailboat",
+                    "synonyms": [
+                        "sailboat"
+                    ]
+                },
+                {
+                    "key": "sandwich",
+                    "synonyms": [
+                        "sandwich"
+                    ]
+                },
+                {
+                    "key": "saw",
+                    "synonyms": [
+                        "saw"
+                    ]
+                },
+                {
+                    "key": "saxophone",
+                    "synonyms": [
+                        "saxophone"
+                    ]
+                },
+                {
+                    "key": "school bus",
+                    "synonyms": [
+                        "school bus"
+                    ]
+                },
+                {
+                    "key": "scissors",
+                    "synonyms": [
+                        "scissors"
+                    ]
+                },
+                {
+                    "key": "scorpion",
+                    "synonyms": [
+                        "scorpion"
+                    ]
+                },
+                {
+                    "key": "screwdriver",
+                    "synonyms": [
+                        "screwdriver"
+                    ]
+                },
+                {
+                    "key": "sea turtle",
+                    "synonyms": [
+                        "sea turtle"
+                    ]
+                },
+                {
+                    "key": "see saw",
+                    "synonyms": [
+                        "see saw"
+                    ]
+                },
+                {
+                    "key": "shark",
+                    "synonyms": [
+                        "shark"
+                    ]
+                },
+                {
+                    "key": "sheep",
+                    "synonyms": [
+                        "sheep"
+                    ]
+                },
+                {
+                    "key": "shoe",
+                    "synonyms": [
+                        "shoe"
+                    ]
+                },
+                {
+                    "key": "shorts",
+                    "synonyms": [
+                        "shorts"
+                    ]
+                },
+                {
+                    "key": "shovel",
+                    "synonyms": [
+                        "shovel"
+                    ]
+                },
+                {
+                    "key": "sink",
+                    "synonyms": [
+                        "sink"
+                    ]
+                },
+                {
+                    "key": "skateboard",
+                    "synonyms": [
+                        "skateboard"
+                    ]
+                },
+                {
+                    "key": "skull",
+                    "synonyms": [
+                        "skull"
+                    ]
+                },
+                {
+                    "key": "skyscraper",
+                    "synonyms": [
+                        "skyscraper"
+                    ]
+                },
+                {
+                    "key": "sleeping bag",
+                    "synonyms": [
+                        "sleeping bag"
+                    ]
+                },
+                {
+                    "key": "smiley face",
+                    "synonyms": [
+                        "smiley face"
+                    ]
+                },
+                {
+                    "key": "snail",
+                    "synonyms": [
+                        "snail"
+                    ]
+                },
+                {
+                    "key": "snake",
+                    "synonyms": [
+                        "snake"
+                    ]
+                },
+                {
+                    "key": "snorkel",
+                    "synonyms": [
+                        "snorkel"
+                    ]
+                },
+                {
+                    "key": "snowflake",
+                    "synonyms": [
+                        "snowflake"
+                    ]
+                },
+                {
+                    "key": "snowman",
+                    "synonyms": [
+                        "snowman"
+                    ]
+                },
+                {
+                    "key": "soccer ball",
+                    "synonyms": [
+                        "soccer ball"
+                    ]
+                },
+                {
+                    "key": "sock",
+                    "synonyms": [
+                        "sock"
+                    ]
+                },
+                {
+                    "key": "speedboat",
+                    "synonyms": [
+                        "speedboat"
+                    ]
+                },
+                {
+                    "key": "spider",
+                    "synonyms": [
+                        "spider"
+                    ]
+                },
+                {
+                    "key": "spoon",
+                    "synonyms": [
+                        "spoon"
+                    ]
+                },
+                {
+                    "key": "spreadsheet",
+                    "synonyms": [
+                        "spreadsheet"
+                    ]
+                },
+                {
+                    "key": "square",
+                    "synonyms": [
+                        "square"
+                    ]
+                },
+                {
+                    "key": "squiggle",
+                    "synonyms": [
+                        "squiggle"
+                    ]
+                },
+                {
+                    "key": "squirrel",
+                    "synonyms": [
+                        "squirrel"
+                    ]
+                },
+                {
+                    "key": "stairs",
+                    "synonyms": [
+                        "stairs"
+                    ]
+                },
+                {
+                    "key": "star",
+                    "synonyms": [
+                        "star"
+                    ]
+                },
+                {
+                    "key": "steak",
+                    "synonyms": [
+                        "steak"
+                    ]
+                },
+                {
+                    "key": "stereo",
+                    "synonyms": [
+                        "stereo"
+                    ]
+                },
+                {
+                    "key": "stethoscope",
+                    "synonyms": [
+                        "stethoscope"
+                    ]
+                },
+                {
+                    "key": "stitches",
+                    "synonyms": [
+                        "stitches"
+                    ]
+                },
+                {
+                    "key": "stop sign",
+                    "synonyms": [
+                        "stop sign"
+                    ]
+                },
+                {
+                    "key": "stove",
+                    "synonyms": [
+                        "stove"
+                    ]
+                },
+                {
+                    "key": "strawberry",
+                    "synonyms": [
+                        "strawberry"
+                    ]
+                },
+                {
+                    "key": "streetlight",
+                    "synonyms": [
+                        "streetlight"
+                    ]
+                },
+                {
+                    "key": "string bean",
+                    "synonyms": [
+                        "string bean"
+                    ]
+                },
+                {
+                    "key": "submarine",
+                    "synonyms": [
+                        "submarine"
+                    ]
+                },
+                {
+                    "key": "suitcase",
+                    "synonyms": [
+                        "suitcase"
+                    ]
+                },
+                {
+                    "key": "sun",
+                    "synonyms": [
+                        "sun"
+                    ]
+                },
+                {
+                    "key": "swan",
+                    "synonyms": [
+                        "swan"
+                    ]
+                },
+                {
+                    "key": "sweater",
+                    "synonyms": [
+                        "sweater"
+                    ]
+                },
+                {
+                    "key": "swing set",
+                    "synonyms": [
+                        "swing set"
+                    ]
+                },
+                {
+                    "key": "sword",
+                    "synonyms": [
+                        "sword"
+                    ]
+                },
+                {
+                    "key": "syringe",
+                    "synonyms": [
+                        "syringe"
+                    ]
+                },
+                {
+                    "key": "table",
+                    "synonyms": [
+                        "table"
+                    ]
+                },
+                {
+                    "key": "teapot",
+                    "synonyms": [
+                        "teapot"
+                    ]
+                },
+                {
+                    "key": "teddy-bear",
+                    "synonyms": [
+                        "teddy-bear"
+                    ]
+                },
+                {
+                    "key": "telephone",
+                    "synonyms": [
+                        "telephone"
+                    ]
+                },
+                {
+                    "key": "television",
+                    "synonyms": [
+                        "television"
+                    ]
+                },
+                {
+                    "key": "tennis racquet",
+                    "synonyms": [
+                        "tennis racquet"
+                    ]
+                },
+                {
+                    "key": "tent",
+                    "synonyms": [
+                        "tent"
+                    ]
+                },
+                {
+                    "key": "The Eiffel Tower",
+                    "synonyms": [
+                        "The Eiffel Tower"
+                    ]
+                },
+                {
+                    "key": "The Great Wall of China",
+                    "synonyms": [
+                        "The Great Wall of China"
+                    ]
+                },
+                {
+                    "key": "The Mona Lisa",
+                    "synonyms": [
+                        "The Mona Lisa"
+                    ]
+                },
+                {
+                    "key": "tiger",
+                    "synonyms": [
+                        "tiger"
+                    ]
+                },
+                {
+                    "key": "toaster",
+                    "synonyms": [
+                        "toaster"
+                    ]
+                },
+                {
+                    "key": "toe",
+                    "synonyms": [
+                        "toe"
+                    ]
+                },
+                {
+                    "key": "toilet",
+                    "synonyms": [
+                        "toilet"
+                    ]
+                },
+                {
+                    "key": "tooth",
+                    "synonyms": [
+                        "tooth"
+                    ]
+                },
+                {
+                    "key": "toothbrush",
+                    "synonyms": [
+                        "toothbrush"
+                    ]
+                },
+                {
+                    "key": "toothpaste",
+                    "synonyms": [
+                        "toothpaste"
+                    ]
+                },
+                {
+                    "key": "tornado",
+                    "synonyms": [
+                        "tornado"
+                    ]
+                },
+                {
+                    "key": "tractor",
+                    "synonyms": [
+                        "tractor"
+                    ]
+                },
+                {
+                    "key": "traffic light",
+                    "synonyms": [
+                        "traffic light"
+                    ]
+                },
+                {
+                    "key": "train",
+                    "synonyms": [
+                        "train"
+                    ]
+                },
+                {
+                    "key": "tree",
+                    "synonyms": [
+                        "tree"
+                    ]
+                },
+                {
+                    "key": "triangle",
+                    "synonyms": [
+                        "triangle"
+                    ]
+                },
+                {
+                    "key": "trombone",
+                    "synonyms": [
+                        "trombone"
+                    ]
+                },
+                {
+                    "key": "truck",
+                    "synonyms": [
+                        "truck"
+                    ]
+                },
+                {
+                    "key": "trumpet",
+                    "synonyms": [
+                        "trumpet"
+                    ]
+                },
+                {
+                    "key": "t-shirt",
+                    "synonyms": [
+                        "t-shirt"
+                    ]
+                },
+                {
+                    "key": "umbrella",
+                    "synonyms": [
+                        "umbrella"
+                    ]
+                },
+                {
+                    "key": "underwear",
+                    "synonyms": [
+                        "underwear"
+                    ]
+                },
+                {
+                    "key": "van",
+                    "synonyms": [
+                        "van"
+                    ]
+                },
+                {
+                    "key": "vase",
+                    "synonyms": [
+                        "vase"
+                    ]
+                },
+                {
+                    "key": "violin",
+                    "synonyms": [
+                        "violin"
+                    ]
+                },
+                {
+                    "key": "washing machine",
+                    "synonyms": [
+                        "washing machine"
+                    ]
+                },
+                {
+                    "key": "watermelon",
+                    "synonyms": [
+                        "watermelon"
+                    ]
+                },
+                {
+                    "key": "waterslide",
+                    "synonyms": [
+                        "waterslide"
+                    ]
+                },
+                {
+                    "key": "whale",
+                    "synonyms": [
+                        "whale"
+                    ]
+                },
+                {
+                    "key": "wheel",
+                    "synonyms": [
+                        "wheel"
+                    ]
+                },
+                {
+                    "key": "windmill",
+                    "synonyms": [
+                        "windmill"
+                    ]
+                },
+                {
+                    "key": "wine bottle",
+                    "synonyms": [
+                        "wine bottle"
+                    ]
+                },
+                {
+                    "key": "wine glass",
+                    "synonyms": [
+                        "wine glass"
+                    ]
+                },
+                {
+                    "key": "wristwatch",
+                    "synonyms": [
+                        "wristwatch"
+                    ]
+                },
+                {
+                    "key": "yoga",
+                    "synonyms": [
+                        "yoga"
+                    ]
+                },
+                {
+                    "key": "zebra",
+                    "synonyms": [
+                        "zebra"
+                    ]
+                },
+                {
+                    "key": "zigzag",
+                    "synonyms": [
+                        "zigzag"
+                    ]
+                }
+
+            ]
+        }
+    ]
+}

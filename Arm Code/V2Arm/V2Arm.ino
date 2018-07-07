@@ -19,7 +19,7 @@
 
 #define LINE_ACCEL 50000
 
-#define ELEVATOR_UP 300
+#define ELEVATOR_UP 600
 #define ELEVATOR_DOWN -500
 
 #define JOINT_1_OFFSET -1840 //in steps
@@ -51,7 +51,7 @@ void setup() {
   while (!Serial) {
     ;
   }
-  Serial.print("Connected");
+  Serial.println("Connected");
   joint1.setAcceleration(JOINT_1_ACCELERATION);
   joint2.setAcceleration(JOINT_2_ACCELERATION);
   elevator.setAcceleration(ELEVATOR_ACCELERATION);
